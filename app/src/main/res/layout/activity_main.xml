@@ -58,14 +58,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fan"
+                android:text="Fan: "
                 android:textSize="30dp"/>
 
-            <Button
-                android:id="@+id/button_fan"
+            <TextView
+                android:id="@+id/textView_fan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Off" />
+                android:text="On"
+                android:textSize="30dp"/>
 
         </LinearLayout>
 
@@ -78,14 +79,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Light"
+                android:text="Light: "
                 android:textSize="30dp"/>
 
-            <Button
-                android:id="@+id/button_light"
+            <TextView
+                android:id="@+id/textView_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Off"/>
+                android:text="Off"
+                android:textSize="30dp"/>
 
         </LinearLayout>
 

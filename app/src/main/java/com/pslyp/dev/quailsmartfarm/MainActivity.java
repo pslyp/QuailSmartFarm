@@ -10,15 +10,18 @@ import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button two, fanBT, lightBT;
-    TextView temp, bright;
+    Button two;
+    TextView temp, bright, fan, light;
 
     String MQTTHOST = "tcp://35.240.137.230:1883";
     String USERNAME = "pslyp";
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     String clientId;
     MqttAndroidClient client;
+    MqttCallback callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
         temp = findViewById(R.id.textView_temp);
         bright = findViewById(R.id.textView_bright);
         two = findViewById(R.id.bt_two);
-        fanBT = findViewById(R.id.button_fan);
-        lightBT = findViewById(R.id.button_light);
+        fan = findViewById(R.id.textView_fan);
+        light = findViewById(R.id.textView_light);
 
         connectMQTT();
 
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        fanBT.setOnClickListener(new View.OnClickListener() {
+        fan.setOnClickListener(new View.OnClickListener() {
             String status = "0";
             @Override
             public void onClick(View v) {
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        lightBT.setOnClickListener(new View.OnClickListener() {
+        light.setOnClickListener(new View.OnClickListener() {
             String status = "0";
             @Override
             public void onClick(View v) {
@@ -110,12 +114,52 @@ public class MainActivity extends AppCompatActivity {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+
+        /*
+        client.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                temp.setText(new String(message.getPayload()));
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+        */
     }
 
     private void publish(String topic, String message) {
         try {
             client.publish(topic, message.getBytes(), 0, false);
         } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void subscribe() {
+        String topic = "temp";
+        int qos = 1;
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+        } catch(MqttException e) {
             e.printStackTrace();
         }
     }

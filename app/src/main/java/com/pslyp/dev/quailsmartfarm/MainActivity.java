@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     String clientId;
     MqttAndroidClient client;
-    MqttCallback callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
         fan.setOnClickListener(new View.OnClickListener() {
             String status = "0";
@@ -104,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(MainActivity.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
+                    subscribe("bri", 1);
+                    subscribe("temp", 2);
                 }
 
                 @Override
@@ -115,7 +115,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        /*
+        callBack();
+    }
+
+    private void callBack() {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
@@ -124,7 +127,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                temp.setText(new String(message.getPayload()));
+                if(topic.equals("temp")) {
+                    temp.setText(new String(message.getPayload()));
+                } else {
+                    bright.setText(new String(message.getPayload()));
+                }
             }
 
             @Override
@@ -132,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        */
     }
 
     private void publish(String topic, String message) {
@@ -143,20 +149,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void subscribe() {
-        String topic = "temp";
-        int qos = 1;
+    private void subscribe(String topic, int qos) {
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-
+                    Toast.makeText(MainActivity.this, "Subscribe: Success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    Toast.makeText(MainActivity.this, "Subscribe: Fail", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch(MqttException e) {

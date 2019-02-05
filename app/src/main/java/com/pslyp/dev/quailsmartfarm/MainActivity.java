@@ -20,7 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button two;
+    Button two, bluetooth;
     TextView temp, bright, fan, light;
 
     String MQTTHOST = "tcp://35.240.137.230:1883";
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         two = findViewById(R.id.bt_two);
         fan = findViewById(R.id.textView_fan);
         light = findViewById(R.id.textView_light);
+        bluetooth = findViewById(R.id.btnBlue);
 
         connectMQTT();
 
@@ -87,6 +88,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Bluetooth.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void connectMQTT() {
@@ -102,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(MainActivity.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
-                    subscribe("bri", 1);
+                    subscribe("brightness", 1);
                     subscribe("temp", 2);
                 }
 

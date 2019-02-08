@@ -11,13 +11,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import static app.akexorcist.bluetotohspp.library.BluetoothState.REQUEST_ENABLE_BT;
-
 public class Bluetooth extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
 
     Button btnOnOff;
+
+    int REQUEST_ENABLE_BT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

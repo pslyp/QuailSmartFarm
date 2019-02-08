@@ -20,7 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button two, bluetooth;
+    Button two, bluetooth, mqtt1, mqtt2;
     TextView temp, bright, fan, light;
 
     String MQTTHOST = "tcp://35.240.137.230:1883";
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         fan = findViewById(R.id.textView_fan);
         light = findViewById(R.id.textView_light);
         bluetooth = findViewById(R.id.btnBlue);
+        mqtt1 = findViewById(R.id.btnMQTT1);
+        mqtt2 = findViewById(R.id.btnMQTT2);
 
         connectMQTT();
 
@@ -95,6 +97,20 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, Bluetooth.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        mqtt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publish("presence", "Hiiiiiiiii");
+            }
+        });
+
+        mqtt2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publish("presence2", "MQTT2");
             }
         });
     }

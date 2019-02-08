@@ -107,4 +107,18 @@
         android:layout_gravity="center_horizontal"
         android:text="Bluetooth" />
 
+    <Button
+        android:id="@+id/btnMQTT1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="MQTT1" />
+
+    <Button
+        android:id="@+id/btnMQTT2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="MQTT2"/>
+
 </LinearLayout>

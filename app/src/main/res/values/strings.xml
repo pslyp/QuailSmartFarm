@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Quail Smart Farm</string>
+    <string name="brightness_tv">Brightness: </string>
+    <string name="temperature_tv">Temperature: </string>
 </resources>

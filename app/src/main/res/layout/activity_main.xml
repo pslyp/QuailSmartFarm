@@ -14,40 +14,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Brightness: "
-            android:textSize="30dp"/>
+            android:text="@string/brightness_tv"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/textView_bright"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30dp"/>
+            android:textSize="30sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16sp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temperature: "
-            android:textSize="30dp"/>
+            android:text="@string/temperature_tv"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/textView_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30dp"/>
+            android:textSize="30sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,14 +60,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fan: "
-                android:textSize="30dp"/>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/textView_fan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="On"
-                android:textSize="30dp"/>
+                android:textSize="30sp" />
 
         </LinearLayout>
 
@@ -80,14 +81,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Light: "
-                android:textSize="30dp"/>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/textView_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Off"
-                android:textSize="30dp"/>
+                android:textSize="30sp" />
 
         </LinearLayout>
 
@@ -98,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Config"/>
+        android:text="Config" />
 
     <Button
         android:id="@+id/btnBlue"
@@ -119,6 +120,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="MQTT2"/>
+        android:text="MQTT2" />
 
 </LinearLayout>

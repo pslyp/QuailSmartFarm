@@ -3,6 +3,8 @@ package com.pslyp.dev.quailsmartfarm;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,8 +36,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("");
 
         initInstance();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_menu :
+                Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.bluetooth_submenu :
+                Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.wifi_submenu :
+                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initInstance() {

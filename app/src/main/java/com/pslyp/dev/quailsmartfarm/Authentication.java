@@ -124,7 +124,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private void logIn() {
         Intent logInIntent = new Intent(Authentication.this, LogIn.class);
         startActivity(logInIntent);
-        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
@@ -163,10 +163,10 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             builder.setMessage(result);
             builder.show();
 
-            //Intent intent = new Intent(Authentication.this, MainActivity.class);
-            //intent.putExtra("GmailName", personName);
-            //startActivity(intent);
-            //finish();
+            Intent intent = new Intent(Authentication.this, MainActivity.class);
+            intent.putExtra("GmailName", personName);
+            startActivity(intent);
+            finish();
         } else {
             Toast.makeText(this, "Not SignIn", Toast.LENGTH_SHORT).show();
         }

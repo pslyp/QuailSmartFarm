@@ -10,6 +10,7 @@ public class LogIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        setTitle("Log In");
     }
 
     @Override
@@ -18,6 +19,7 @@ public class LogIn extends AppCompatActivity {
 
         Intent authIntent = new Intent(LogIn.this, Authentication.class);
         startActivity(authIntent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 }

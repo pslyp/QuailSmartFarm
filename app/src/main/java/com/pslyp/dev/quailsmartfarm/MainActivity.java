@@ -139,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
                 publish("presence2", "MQTT2");
             }
         });
+
+        String name = getIntent().getStringExtra("GmailName");
+        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
     }
 
     private void connectMQTT() {

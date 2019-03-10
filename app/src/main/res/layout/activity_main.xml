@@ -122,4 +122,11 @@
         android:layout_gravity="center_horizontal"
         android:text="MQTT2" />
 
+    <Button
+        android:id="@+id/button_sign_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Sign out" />
+
 </LinearLayout>

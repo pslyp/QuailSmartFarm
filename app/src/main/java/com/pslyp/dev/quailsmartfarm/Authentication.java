@@ -1,6 +1,8 @@
 package com.pslyp.dev.quailsmartfarm;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +21,14 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-public class Authentication extends AppCompatActivity implements View.OnClickListener {
+public class Authentication extends Activity implements View.OnClickListener {
 
     private TextView login;
+
+    //Shared Preferences
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    final String PREF_NAME = "LoginPreferences";
 
     //Facebook Signin
     private LoginButton loginButton;
@@ -155,6 +162,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             String personEmail = account.getEmail();
             String personId = account.getId();
             Uri personPhoto = account.getPhotoUrl();
+
+            sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+            editor = sp.edit();
+            editor.putString("id", personId);
+            editor.commit();
 
             String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
             //Toast.makeText(this, result, Toast.LENGTH_SHORT).show();

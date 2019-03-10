@@ -22,16 +22,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LogIn"></activity>
         <activity android:name=".Authentication">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Bluetooth" />
-        <activity android:name=".configNetwork" />
-        <activity android:name=".MainActivity">
-
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +29,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
+        </activity>
+        <activity android:name=".Bluetooth" />
+        <activity android:name=".configNetwork" />
+        <activity android:name=".MainActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />

@@ -21,7 +21,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-public class Authentication extends Activity implements View.OnClickListener {
+public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
     private TextView login;
 

@@ -33,10 +33,12 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button two, bluetooth, mqtt1, mqtt2, signOut_btn;
-    TextView temp, bright, fan, light;
+    TextView temp, bright, fanSta, lampSta;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -46,12 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Google Sign out
     private GoogleSignInClient mGoogleSignInClient;
 
+    //MQTT
+    String clientId;
+    MqttAndroidClient client;
+
     String MQTTHOST = "tcp://35.240.137.230:1883";
     String USERNAME = "pslyp";
     String PASSWORD = "1475369";
-
-    String clientId;
-    MqttAndroidClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initInstance() {
-        temp = findViewById(R.id.textView_temp);
-        bright = findViewById(R.id.textView_bright);
+        temp = findViewById(R.id.text_view_temp);
+        bright = findViewById(R.id.text_view_bright);
         two = findViewById(R.id.bt_two);
-        fan = findViewById(R.id.textView_fan);
-        light = findViewById(R.id.textView_light);
+        fanSta = findViewById(R.id.text_view_fan_status);
+        lampSta = findViewById(R.id.text_view_lamp_status);
         bluetooth = findViewById(R.id.btnBlue);
         mqtt1 = findViewById(R.id.btnMQTT1);
         mqtt2 = findViewById(R.id.btnMQTT2);
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        fan.setOnClickListener(new View.OnClickListener() {
+        fanSta.setOnClickListener(new View.OnClickListener() {
             String status = "0";
             @Override
             public void onClick(View v) {
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        light.setOnClickListener(new View.OnClickListener() {
+        lampSta.setOnClickListener(new View.OnClickListener() {
             String status = "0";
             @Override
             public void onClick(View v) {
@@ -223,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void connectMQTT() {
+    public void connectMQTT() {
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(getApplicationContext(), MQTTHOST, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
@@ -235,14 +238,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(MainActivity.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MQTT.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
                     subscribe("brightness", 1);
-                    subscribe("temp", 2);
+                    subscribe("temperature", 2);
+                    subscribe("fanStatus", 2);
+                    subscribe("lampStatus", 2);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(MainActivity.this, "Not Connected MQTT", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Not Connected MQTT", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -260,12 +265,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                if(topic.equals("temp")) {
+            public void messageArrived(String topic, MqttMessage message) {
+                if(topic.equals("temperature"))
                     temp.setText(new String(message.getPayload()));
-                } else {
+                if(topic.equals("brightness"))
                     bright.setText(new String(message.getPayload()));
+                if(topic.equals("fanStatus"))
+                    fanSta.setText(new String(message.getPayload()));
+                if(topic.equals("lampStatus"))
+                    lampSta.setText(new String(message.getPayload()));
+
+                /*
+                switch (topic) {
+                    case "temperature":
+                        temp.setText(new String(message.getPayload()));
+                        break;
+                    case "brightness":
+                        bright.setText(new String(message.getPayload()));
+                        break;
+                    case "fanStatus":
+                        fanSta.setText(new String(message.getPayload()));
+                        break;
+                    case "lampStatus":
+                        lampSta.setText(new String(message.getPayload()));
+                        break;
+                    default: break;
                 }
+                */
             }
 
             @Override
@@ -275,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void publish(String topic, String message) {
+    public void publish(String topic, String message) {
         try {
             client.publish(topic, message.getBytes(), 0, false);
         } catch (MqttException e) {
@@ -289,12 +315,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(MainActivity.this, "Subscribe: Success", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Subscribe: Success", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(MainActivity.this, "Subscribe: Fail", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Subscribe: Fail", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch(MqttException e) {

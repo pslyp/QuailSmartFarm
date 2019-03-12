@@ -4,44 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="16dp"
     android:id="@+id/Layout1"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/brightness_tv"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/textView_bright"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16sp">
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/temperature_tv"
-            android:textSize="30sp" />
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView_temp"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_brightness"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/text_view_bright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp" />
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_temperature"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/text_view_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -55,19 +67,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fan: "
+                android:text="@string/text_fan"
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/textView_fan"
+                android:id="@+id/text_view_fan_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="On"
                 android:textSize="30sp" />
 
         </LinearLayout>
@@ -76,19 +88,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Light: "
+                android:text="@string/text_light"
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/textView_light"
+                android:id="@+id/text_view_lamp_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Off"
                 android:textSize="30sp" />
 
         </LinearLayout>
@@ -100,14 +112,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Config" />
+        android:text="Config"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btnBlue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Bluetooth" />
+        android:text="Bluetooth"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btnMQTT1"

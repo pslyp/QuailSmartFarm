@@ -177,7 +177,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             builder.show();
 
             Intent intent = new Intent(Authentication.this, MainActivity.class);
-            intent.putExtra("GmailName", personName);
+            //intent.putExtra("GmailName", personName);
             startActivity(intent);
             finish();
         } else {

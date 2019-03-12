@@ -3,6 +3,8 @@
     <string name="fb_login_protocol_scheme">fb152664692343311</string>
 
     <string name="app_name">Quail Smart Farm</string>
-    <string name="brightness_tv">Brightness: </string>
-    <string name="temperature_tv">Temperature: </string>
+    <string name="text_brightness">Brightness</string>
+    <string name="text_temperature">Temperature</string>
+    <string name="text_fan">Fan</string>
+    <string name="text_light">Light</string>
 </resources>

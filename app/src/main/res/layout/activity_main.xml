@@ -73,11 +73,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_fan"
+                android:text="@string/text_lamp"
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/text_view_fan_status"
+                android:id="@+id/text_view_lamp_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp" />
@@ -94,11 +94,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_light"
+                android:text="@string/text_fan"
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/text_view_lamp_status"
+                android:id="@+id/text_view_fan_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30sp" />

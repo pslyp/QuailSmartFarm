@@ -1,6 +1,5 @@
 package com.pslyp.dev.quailsmartfarm;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -21,6 +20,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
     private TextView login;
@@ -37,6 +38,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private GoogleSignInClient mGoogleSignInClient;
     private final String TAG = "Signin Fail";
     private static final int RC_SIGN_IN = 1010;
+
+    MainActivity main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,17 +170,21 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             editor = sp.edit();
             editor.putString("id", personId);
+            editor.putString("first_name", personGivenName);
+            editor.putString("last_name", personFamilyName);
+            editor.putString("email", personEmail);
             editor.commit();
 
+            String data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);
+
             String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
-            //Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
             builder.setMessage(result);
             builder.show();
 
             Intent intent = new Intent(Authentication.this, MainActivity.class);
-            //intent.putExtra("GmailName", personName);
+            intent.putExtra("user", data);
             startActivity(intent);
             finish();
         } else {

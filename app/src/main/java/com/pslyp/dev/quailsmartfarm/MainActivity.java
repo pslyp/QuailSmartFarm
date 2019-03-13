@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_menu:
-                Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, addBoard.class);
+                startActivity(intent);
+                finish();
                 return true;
             case R.id.bluetooth_submenu:
                 Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
@@ -129,15 +132,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        String namePre = sharedPreferences.getString("name", "not found!");
-        String emailPre = sharedPreferences.getString("email", "not found!");
         String idPre = sharedPreferences.getString("id", "not found!");
+        String firstNamePre = sharedPreferences.getString("first_name", "not found!");
+        String lastNamePre = sharedPreferences.getString("last_name", "not found!");
+        String emailPre = sharedPreferences.getString("email", "not found!");
 
         if(idPre.equals("not found!")) {
             Intent intent = new Intent(MainActivity.this, Authentication.class);
             startActivity(intent);
             finish();
         }
+
+        String data = (idPre + "-" + firstNamePre + "-" + lastNamePre + "-" + emailPre);
+
+        publish("user/create", data);
 
         //Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -239,10 +247,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     //Toast.makeText(MQTT.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
-                    subscribe("brightness", 1);
-                    subscribe("temperature", 2);
-                    subscribe("fanStatus", 2);
-                    subscribe("lampStatus", 2);
+                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness", 1);
+                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature", 1);
+                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus", 1);
+                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus", 1);
                 }
 
                 @Override
@@ -266,13 +274,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                if(topic.equals("temperature"))
+                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature"))
                     temp.setText(new String(message.getPayload()));
-                if(topic.equals("brightness"))
+                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness"))
                     bright.setText(new String(message.getPayload()));
-                if(topic.equals("fanStatus"))
+                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus"))
                     fanSta.setText(new String(message.getPayload()));
-                if(topic.equals("lampStatus"))
+                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus"))
                     lampSta.setText(new String(message.getPayload()));
 
                 /*

@@ -2,8 +2,10 @@ package com.pslyp.dev.quailsmartfarm;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,9 +23,15 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "ERROR";
     private TextView login;
 
     //Shared Preferences
@@ -31,13 +39,22 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     SharedPreferences.Editor editor;
     final String PREF_NAME = "LoginPreferences";
 
+    boolean isConnected;
+
     //Facebook Signin
     private LoginButton loginButton;
 
-    //Google Signin
-    private GoogleSignInClient mGoogleSignInClient;
-    private final String TAG = "Signin Fail";
-    private static final int RC_SIGN_IN = 1010;
+    //Google Sign-in
+    Google google;
+
+    //MQTT
+    String clientId;
+    MqttAndroidClient client;
+    IMqttToken token;
+
+    String MQTTHOST = "tcp://35.240.137.230:1883";
+    String USERNAME = "pslyp";
+    String PASSWORD = "1475369";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +71,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        GoogleSignInAccount account = google.getLastSignIn();
         updateUI(account);
     }
 
@@ -62,7 +79,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button :
-                signIn();
+                if(isConnected)
+                    signIn();
                 break;
             case R.id.log_in_text_view :
                 logIn();
@@ -75,7 +93,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == google.getRcSignIn()) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -112,6 +130,11 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         });
         */
 
+        google = new Google(this);
+
+        google.GSO();
+
+        /*
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -120,12 +143,26 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        */
 
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         // Set on click button
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfos = connectivityManager.getActiveNetworkInfo();
+
+        isConnected = networkInfos != null &&
+                      networkInfos.isConnected();
+
+        if(isConnected)
+            connectMQTT();
+        else {
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.authenLayout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
     }
 
     //Open Login Activity
@@ -137,8 +174,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        Intent signInIntent = google.getmGoogleSignInClient().getSignInIntent();
+        startActivityForResult(signInIntent, google.getRcSignIn());
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -178,6 +215,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
+            publish("user/create", data);
+
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
             //builder.setMessage(result);
             //builder.show();
@@ -188,6 +227,39 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             finish();
         } else {
             Toast.makeText(this, "Not SignIn", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void connectMQTT() {
+        clientId = MqttClient.generateClientId();
+        client = new MqttAndroidClient(getApplicationContext(), MQTTHOST, clientId);
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
+
+        try {
+            token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void publish(String topic, String message) {
+        try {
+            client.publish(topic, message.getBytes(), 0, false);
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 }

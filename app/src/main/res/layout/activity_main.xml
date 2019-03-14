@@ -108,7 +108,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/bt_two"
+        android:id="@+id/button_two"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -116,7 +116,7 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/btnBlue"
+        android:id="@+id/button_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -124,14 +124,14 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/btnMQTT1"
+        android:id="@+id/button_mqtt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="MQTT1" />
 
     <Button
-        android:id="@+id/btnMQTT2"
+        android:id="@+id/button_mqtt2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

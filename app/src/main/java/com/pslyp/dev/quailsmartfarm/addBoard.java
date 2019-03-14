@@ -6,11 +6,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+
 public class addBoard extends AppCompatActivity {
 
-    Button add;
+    Button addBtn;
 
-    MainActivity main;
+    //MQTT
+    String clientId;
+    MqttAndroidClient client;
+
+    String MQTTHOST = "tcp://35.240.137.230:1883";
+    String USERNAME = "pslyp";
+    String PASSWORD = "1475369";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +38,9 @@ public class addBoard extends AppCompatActivity {
     }
 
     private void initInstance() {
-        add = findViewById(R.id.button_add);
+        addBtn = findViewById(R.id.button_add);
 
-        add.setOnClickListener(new View.OnClickListener() {
+        addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

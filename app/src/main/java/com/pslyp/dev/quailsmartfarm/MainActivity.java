@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //MQTT
     String clientId;
     MqttAndroidClient client;
+    IMqttToken token;
 
     String MQTTHOST = "tcp://35.240.137.230:1883";
     String USERNAME = "pslyp";
@@ -61,6 +62,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("");
+
+        //SharedPreferences
+        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+        //Check Login
+        boolean isLogin = sp.getBoolean("log_in", false);
+        if(!isLogin) {
+            Intent intent = new Intent(MainActivity.this, Authentication.class);
+            startActivity(intent);
+            finish();
+        }
 
         initInstance();
     }
@@ -129,24 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         signOut_btn = findViewById(R.id.button_sign_out);
         findViewById(R.id.button_sign_out).setOnClickListener(this);
 
-        //SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-
-        String idPre = sharedPreferences.getString("id", "not found!");
-        String firstNamePre = sharedPreferences.getString("first_name", "not found!");
-        String lastNamePre = sharedPreferences.getString("last_name", "not found!");
-        String emailPre = sharedPreferences.getString("email", "not found!");
-
-        if(idPre.equals("not found!")) {
-            Intent intent = new Intent(MainActivity.this, Authentication.class);
-            startActivity(intent);
-            finish();
-        }
-
-        String data = (idPre + "-" + firstNamePre + "-" + lastNamePre + "-" + emailPre);
-
-        publish("user/create", data);
-
         //Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -163,9 +157,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(isConnected) {
             connectMQTT();
+
+            sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            String id = sp.getString("id", "");
+            String firstName = sp.getString("first_name", "");
+            String lastName = sp.getString("last_name", "");
+            String email = sp.getString("email", "");
+
+            String user = (id + "-" + firstName + "-" + lastName + "-" + email);
+
+            Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();
+
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.Layout1), id, Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
         } else {
-            Toast.makeText(this, "Internet not connect", Toast.LENGTH_SHORT).show();
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.Layout1), "No Internet Connection", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.Layout1), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         }
 
@@ -222,7 +228,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mqtt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                publish("presence", "Hiiiiiiiii");
+                //publish("presence", "Hiiiiiiiii");
+                publish("user/create", "432743278-PSlyp-Sali-phiphat.green@gmail.com");
             }
         });
 
@@ -242,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.setPassword(PASSWORD.toCharArray());
 
         try {
-            IMqttToken token = client.connect(options);
+            token = client.connect(options);
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {

@@ -39,8 +39,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private final String TAG = "Signin Fail";
     private static final int RC_SIGN_IN = 1010;
 
-    MainActivity main;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,6 +167,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
             editor = sp.edit();
+            editor.putBoolean("log_in", true);
             editor.putString("id", personId);
             editor.putString("first_name", personGivenName);
             editor.putString("last_name", personFamilyName);
@@ -179,12 +178,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
-            builder.setMessage(result);
-            builder.show();
+            //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
+            //builder.setMessage(result);
+            //builder.show();
 
             Intent intent = new Intent(Authentication.this, MainActivity.class);
-            intent.putExtra("user", data);
+            //intent.putExtra("user", data);
             startActivity(intent);
             finish();
         } else {

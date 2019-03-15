@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button two, bluetooth, mqtt1, mqtt2, signOut_btn;
     TextView temp, bright, fanSta, lampSta;
+    LinearLayout linearLayout1;
 
     //MQTT
     MQTT mqtt;
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initInstance() {
+        linearLayout1 = findViewById(R.id.linear_layout_1);
         temp = findViewById(R.id.text_view_temp);
         bright = findViewById(R.id.text_view_bright);
         two = findViewById(R.id.button_two);
@@ -141,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_mqtt1).setOnClickListener(this);
         findViewById(R.id.button_mqtt2).setOnClickListener(this);
         findViewById(R.id.button_sign_out).setOnClickListener(this);
+
+        linearLayout1.setVisibility(View.GONE);
 
         //Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

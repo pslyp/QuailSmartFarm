@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.add_menu:
                 //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, addBoard.class);
+                Intent intent = new Intent(MainActivity.this, AddBoard.class);
                 startActivity(intent);
                 finish();
                 return true;

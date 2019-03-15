@@ -32,7 +32,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ERROR";
-    private TextView login;
+    private TextView logInTV, createAccountTV;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -78,11 +78,14 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.text_view_create_new_account :
+                createAccount();
+                break;
             case R.id.sign_in_button :
                 if(isConnected)
                     signIn();
                 break;
-            case R.id.log_in_text_view :
+            case R.id.text_view_log_in :
                 logIn();
                 break;
         }
@@ -102,8 +105,11 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initInstance() {
-        login = findViewById(R.id.log_in_text_view);
-        findViewById(R.id.log_in_text_view).setOnClickListener(this);
+        logInTV = findViewById(R.id.text_view_log_in);
+        createAccountTV = findViewById(R.id.text_view_create_new_account);
+
+        findViewById(R.id.text_view_log_in).setOnClickListener(this);
+        findViewById(R.id.text_view_create_new_account).setOnClickListener(this);
 
         /*
         loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -165,12 +171,20 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    //Open Create Account Activity
+    private void createAccount() {
+        Intent intent = new Intent(Authentication.this, CreateAccount.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        finish();
+    }
+
     //Open Login Activity
     private void logIn() {
         Intent logInIntent = new Intent(Authentication.this, LogIn.class);
         startActivity(logInIntent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        finish();
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //finish();
     }
 
     private void signIn() {

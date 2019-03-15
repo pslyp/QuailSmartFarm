@@ -20,18 +20,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".addBoard"></activity>
-        <activity android:name=".LogIn" />
-        <activity android:name=".Authentication">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+        <activity android:name=".CreateAccount"></activity>
+        <activity android:name=".AddBoard" />
+        <activity android:name=".LogIn">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.pslyp.dev.quailsmartfarm.Authentication">
+            </meta-data>
         </activity>
+        <activity android:name=".Authentication"/>
         <activity android:name=".Bluetooth" />
         <activity android:name=".configNetwork" />
         <activity android:name=".MainActivity">

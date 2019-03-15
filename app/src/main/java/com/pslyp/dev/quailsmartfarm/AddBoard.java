@@ -15,7 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-public class addBoard extends AppCompatActivity implements View.OnClickListener {
+public class AddBoard extends AppCompatActivity implements View.OnClickListener {
 
     Button addBtn;
     TextInputLayout token, name;
@@ -39,7 +39,7 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.button_add:
+            case R.id.button_add_board:
                 addBoard();
                 break;
         }
@@ -49,18 +49,17 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
     public void onBackPressed() {
         super.onBackPressed();
 
-        Intent intent = new Intent(addBoard.this, MainActivity.class);
+        Intent intent = new Intent(AddBoard.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-
-
     private void initInstance() {
-        addBtn = findViewById(R.id.button_add);
-        findViewById(R.id.button_add).setOnClickListener(this);
+        addBtn = findViewById(R.id.button_add_board);
         token = findViewById(R.id.text_input_board_token);
         name = findViewById(R.id.text_input_board_name);
+
+        findViewById(R.id.button_add_board).setOnClickListener(this);
 
         connectMQTT();
     }
@@ -106,5 +105,6 @@ public class addBoard extends AppCompatActivity implements View.OnClickListener 
         String n = name.getEditText().getText().toString();
 
         publish("user/data/token/insert", (id + "-" + t + "-" + n));
+
     }
 }

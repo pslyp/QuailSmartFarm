@@ -7,9 +7,15 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +34,10 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     Button two, bluetooth, mqtt1, mqtt2, signOut_btn;
     TextView temp, bright, fanSta, lampSta;
@@ -128,6 +137,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_sign_out:
+                signOut();
+                break;
+        }
+        drawerLayout.closeDrawer(Gravity.START);
+        return true;
+    }
+
     private void initInstance() {
         linearLayout1 = findViewById(R.id.linear_layout_1);
         temp = findViewById(R.id.text_view_temp);
@@ -139,13 +159,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mqtt1 = findViewById(R.id.button_mqtt1);
         mqtt2 = findViewById(R.id.button_mqtt2);
         signOut_btn = findViewById(R.id.button_sign_out);
+        navigationView = findViewById(R.id.nav_view);
 
         findViewById(R.id.button_bluetooth).setOnClickListener(this);
         findViewById(R.id.button_mqtt1).setOnClickListener(this);
         findViewById(R.id.button_mqtt2).setOnClickListener(this);
         findViewById(R.id.button_sign_out).setOnClickListener(this);
 
-        linearLayout1.setVisibility(View.GONE);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_launcher_background);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //linearLayout1.setVisibility(View.GONE);
 
         //Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -174,12 +204,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();
 
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.Layout1), id, Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
 
             callBack();
         } else {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.Layout1), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         }
 

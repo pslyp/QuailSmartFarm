@@ -53,7 +53,7 @@
         android:id="@+id/button_log_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/text_view_forgot_password"
         android:text="Log In"
         android:textSize="18sp" />
 

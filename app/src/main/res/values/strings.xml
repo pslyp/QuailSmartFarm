@@ -3,6 +3,12 @@
     <string name="fb_login_protocol_scheme">fb152664692343311</string>
 
     <string name="app_name">Quail Smart Farm</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">Android Studio Subtitle</string>
+    <string name="nav_header_desc">Navigation header</string>
+
     <string name="text_brightness">Brightness</string>
     <string name="text_temperature">Temperature</string>
     <string name="text_fan">Fan</string>

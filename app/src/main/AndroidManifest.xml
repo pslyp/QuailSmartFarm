@@ -31,7 +31,9 @@
         <activity android:name=".Authentication"/>
         <activity android:name=".Bluetooth" />
         <activity android:name=".configNetwork" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

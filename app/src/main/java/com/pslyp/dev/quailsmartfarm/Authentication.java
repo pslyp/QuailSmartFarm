@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.pslyp.dev.quailsmartfarm.models.Status;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -26,6 +27,11 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,6 +44,9 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     final String PREF_NAME = "LoginPreferences";
 
     boolean isConnected;
+
+    quailSmartFarmApi quailSmartFarmApi;
+    String data = null;
 
     //Facebook Signin
     private LoginButton loginButton;
@@ -109,6 +118,16 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.text_view_log_in).setOnClickListener(this);
         findViewById(R.id.text_view_create_new_account).setOnClickListener(this);
 
+        //Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://quailsmartfarm.herokuapp.com")
+                //.addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        quailSmartFarmApi = retrofit.create(quailSmartFarmApi.class);
+        //checkUser(quailSmartFarmApi);
+
+
         /*
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
@@ -164,6 +183,33 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
+    private void checkUser(quailSmartFarmApi qsfAPI) {
+        Call<Status> resCall = qsfAPI.checkUser("117699091589038964647");
+        resCall.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if(!response.isSuccessful()) {
+                    Log.e(TAG, String.valueOf(response.code()));
+                    return;
+                }
+
+                String status = response.body().toString();
+
+                Log.e(TAG, status);
+                publish("user/create", data);
+
+                if(status.equals("Not Found"))
+                    Log.e(TAG, status);
+                    publish("user/create", data);
+            }
+
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+
+            }
+        });
+    }
+
     //Open Login Activity
     private void logIn() {
         Intent logInIntent = new Intent(Authentication.this, LogIn.class);
@@ -210,11 +256,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             editor.putString("email", personEmail);
             editor.commit();
 
-            String data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);
+            data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);
 
-            String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
+            //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            publish("user/create", data);
+            checkUser(quailSmartFarmApi);
+            //publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
             //builder.setMessage(result);

@@ -29,7 +29,7 @@ public class configNetwork extends AppCompatActivity {
 
     private void initInstance() {
         btnSend = findViewById(R.id.btnSend);
-        btnBluetooth = findViewById(R.id.btnBluetooth);
+        btnBluetooth = findViewById(R.id.button_bluetooth);
         bt = new BluetoothSPP(configNetwork.this);
 
         if(!bt.isBluetoothAvailable()) {
@@ -57,7 +57,7 @@ public class configNetwork extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
-        bt.stopAutoConnect();
+        bt.stopService();
     }
 
     public void onStart() {

@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,13 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String PREF_NAME = "LoginPreferences";
 
     //Google Sign out
-    private GoogleSignInClient mGoogleSignInClient;
+    private Google google;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("");
 
         //SharedPreferences
         sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Check Login
         boolean isLogin = sp.getBoolean("log_in", false);
         if(!isLogin) {
-            Intent intent = new Intent(MainActivity.this, Authentication.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, Authentication.class));
             finish();
         }
 
@@ -128,7 +127,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 return true;
             case R.id.bluetooth_submenu:
-                Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, configNetwork.class));
+                finish();
                 return true;
             case R.id.wifi_submenu:
                 Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
@@ -168,6 +169,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initInstance() {
+        google = new Google(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+
         linearLayout1 = findViewById(R.id.linear_layout_1);
         temp = findViewById(R.id.text_view_temp);
         bright = findViewById(R.id.text_view_bright);
@@ -186,28 +198,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_mqtt2).setOnClickListener(this);
         findViewById(R.id.button_sign_out).setOnClickListener(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setHomeAsUpIndicator(R.drawable.ic_launcher_background);
-
-        navigationView.setNavigationItemSelectedListener(this);
-
         //linearLayout1.setVisibility(View.GONE);
 
-        //Google
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        //Internet connected?
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfos = connectivityManager.getActiveNetworkInfo();
 
@@ -292,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void signOut() {
-        mGoogleSignInClient.signOut()
+        google.mGoogleSignInClient().signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -302,8 +295,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editor.clear();
                         editor.commit();
 
-                        Intent intent = new Intent(MainActivity.this, Authentication.class);
-                        startActivity(intent);
+                        startActivity(new Intent(MainActivity.this, Authentication.class));
                         finish();
                     }
                 });

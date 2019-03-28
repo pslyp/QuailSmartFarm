@@ -16,8 +16,6 @@ import android.widget.Toast;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -71,7 +69,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount account = google.getLastSignIn();
+        GoogleSignInAccount account = google.lastSignIn();
         updateUI(account);
     }
 
@@ -96,7 +94,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == google.getRcSignIn()) {
+        if (requestCode == google.RC_SIGN_IN()) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -138,19 +136,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         google = new Google(this);
 
-        google.GSO();
-
-        /*
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        */
-
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -188,8 +173,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signIn() {
-        Intent signInIntent = google.getmGoogleSignInClient().getSignInIntent();
-        startActivityForResult(signInIntent, google.getRcSignIn());
+        Intent signInIntent = google.mGoogleSignInClient().getSignInIntent();
+        startActivityForResult(signInIntent, google.RC_SIGN_IN());
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {

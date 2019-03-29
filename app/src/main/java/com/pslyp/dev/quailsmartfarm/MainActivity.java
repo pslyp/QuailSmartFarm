@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +27,19 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
+import com.pslyp.dev.quailsmartfarm.models.Board;
+import com.pslyp.dev.quailsmartfarm.models.User;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout linearLayout1;
 
     RestAPI restAPI;
+    ArrayList<String> tokenList;
 
     //MQTT
     MQTT mqtt;
@@ -170,6 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         google = new Google(this);
         restAPI = new RestAPI();
 
+        tokenList = new ArrayList<String>();
+
         linearLayout1 = findViewById(R.id.linear_layout_1);
         temp = findViewById(R.id.text_view_temp);
         bright = findViewById(R.id.text_view_bright);
@@ -191,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -213,7 +226,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String lastName = sp.getString("last_name", "");
             String email = sp.getString("email", "");
 
-            String user = (id + "-" + firstName + "-" + lastName + "-" + email);
+            //String user = (id + "-" + firstName + "-" + lastName + "-" + email);
+
+            Call<User> call = restAPI.getQsfService().getBoard("117699091589038964647");
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    User user = response.body();
+
+                    List<Board> boards = user.getBoard();
+
+                    if(boards != null) {
+                        String b = "";
+                        for (Board board : boards) {
+                            b += board.getToken();
+                            tokenList.add(board.getToken());
+                        }
+
+                        Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
+                        Log.e("Response", b);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+
+                }
+            });
 
             //Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();3
 

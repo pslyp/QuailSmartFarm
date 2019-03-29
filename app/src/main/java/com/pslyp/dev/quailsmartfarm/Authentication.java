@@ -25,6 +25,8 @@ import com.pslyp.dev.quailsmartfarm.api.qsfService;
 import com.pslyp.dev.quailsmartfarm.models.Status;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ERROR";
-    private TextView logInTV, createAccountTV;
+    private TextView logInTV, createAccountTV, test;
     private Button testAPI;
 
     //Shared Preferences
@@ -107,6 +109,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         logInTV = findViewById(R.id.text_view_log_in);
         createAccountTV = findViewById(R.id.text_view_create_new_account);
         testAPI = findViewById(R.id.test_api_button);
+        test = findViewById(R.id.test_text_view);
 
         findViewById(R.id.text_view_log_in).setOnClickListener(this);
         findViewById(R.id.text_view_create_new_account).setOnClickListener(this);
@@ -158,21 +161,49 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         final qsfService qsfService = retrofit.create(qsfService.class);
 
+//        Call<List<User>> call = qsfService.getUsers();
+//        call.enqueue(new Callback<List<User>>() {
+//            @Override
+//            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+//
+//
+//                List<User> userResponse = response.body();
+//
+//                String content = "";
+//                for(User user : userResponse) {
+//                    content += "ID:" + user.getId() + "\n";
+//                }
+//
+//                Toast.makeText(Authentication.this, content, Toast.LENGTH_SHORT).show();
+//                Log.e("Call Response", content);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<User>> call, Throwable t) {
+//
+//            }
+//        });
+
         testAPI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<User> call = qsfService.getUsers();
-                call.enqueue(new Callback<User>() {
+                Call<List<User>> call = qsfService.getUsers();
+                call.enqueue(new Callback<List<User>>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        User userResponse = response.body();
-                        String id = userResponse.getId();
+                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                        List<User> users = response.body();
 
-                        Toast.makeText(Authentication.this, id, Toast.LENGTH_SHORT).show();
+                        String content = "";
+                        for(User user : users) {
+                            content += "ID:" + user.getId() + "\n";
+                        }
+
+                        Toast.makeText(Authentication.this, content, Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, content);
                     }
 
                     @Override
-                    public void onFailure(Call<User> call, Throwable t) {
+                    public void onFailure(Call<List<User>> call, Throwable t) {
 
                     }
                 });
@@ -195,8 +226,11 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         isConnected = networkInfos != null &&
                       networkInfos.isConnected();
 
-        if(isConnected)
+        if(isConnected) {
             mqtt.connected();
+
+            //setUser("117699091589038964647", data);
+        }
         else {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.authenLayout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
@@ -210,34 +244,29 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
-    private void setUser(String id, String data) {
-        Call<User> resCall = restAPI.getQsfService().checkUser(id);
-        resCall.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if(!response.isSuccessful()) {
-                    Log.e(TAG, String.valueOf(response.code()));
-                    return;
-                }
+    private void setUser(String id, final String data) {
+       Call<Status> call = restAPI.getQsfService().checkUser(id);
+       call.enqueue(new Callback<Status>() {
+           @Override
+           public void onResponse(Call<Status> call, Response<Status> response) {
+               if(!response.isSuccessful()) {
+                   Log.e("Response", "not success");
+                   return;
+               }
 
-                User userResponse = response.body();
-                String id = userResponse.getId();
+               String status = response.body().getStatus();
 
-                Toast.makeText(Authentication.this, id, Toast.LENGTH_SHORT).show();
+               if(!status.equals("Found"))
+                   mqtt.publish("user/create", data);
 
-//                Log.e(TAG, status);
-//                //publish("user/create", data);
-//
-//                if(status.equals("Not Found"))
-//                    Log.e(TAG, status);
-//                    //publish("user/create", data);
-            }
+               Log.e("Response", status);
+           }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(Authentication.this, "Set User Fail", Toast.LENGTH_SHORT).show();
-            }
-        });
+           @Override
+           public void onFailure(Call<Status> call, Throwable t) {
+                Log.e("Response" , "Fail");
+           }
+       });
     }
 
     //Open Login Activity

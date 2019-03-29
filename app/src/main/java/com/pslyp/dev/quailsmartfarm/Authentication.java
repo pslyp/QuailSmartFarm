@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,24 +20,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.pslyp.dev.quailsmartfarm.api.RestAPI;
+import com.pslyp.dev.quailsmartfarm.api.qsfService;
 import com.pslyp.dev.quailsmartfarm.models.Status;
-
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import com.pslyp.dev.quailsmartfarm.models.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "ERROR";
     private TextView logInTV, createAccountTV;
+    private Button testAPI;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -45,7 +44,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     boolean isConnected;
 
-    quailSmartFarmApi quailSmartFarmApi;
+    RestAPI restAPI;
     String data = null;
 
     //Facebook Signin
@@ -55,19 +54,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     Google google;
 
     //MQTT
-    String clientId;
-    MqttAndroidClient client;
-    IMqttToken token;
-
-    String MQTTHOST = "tcp://35.240.137.230:1883";
-    String USERNAME = "pslyp";
-    String PASSWORD = "1475369";
+    MQTT mqtt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
-        setTitle("");
 
         initInstance();
     }
@@ -114,18 +106,24 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private void initInstance() {
         logInTV = findViewById(R.id.text_view_log_in);
         createAccountTV = findViewById(R.id.text_view_create_new_account);
+        testAPI = findViewById(R.id.test_api_button);
 
         findViewById(R.id.text_view_log_in).setOnClickListener(this);
         findViewById(R.id.text_view_create_new_account).setOnClickListener(this);
+        //findViewById(R.id.test_api_button).setOnClickListener(this);
 
-        //Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://quailsmartfarm.herokuapp.com")
-                //.addConverterFactory(GsonConverterFactory.create())
-                .build();
+        //restAPI = new RestAPI();
 
-        quailSmartFarmApi = retrofit.create(quailSmartFarmApi.class);
-        //checkUser(quailSmartFarmApi);
+        //restAPI.create(qsfService.class);
+
+//        //Retrofit
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://quailsmartfarm.herokuapp.com")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        qsfService = retrofit.create(qsfService.class);
+        //setUser(qsfService);
 
 
         /*
@@ -153,7 +151,37 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         });
         */
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://quailsmartfarm.herokuapp.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        final qsfService qsfService = retrofit.create(qsfService.class);
+
+        testAPI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<User> call = qsfService.getUsers();
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        User userResponse = response.body();
+                        String id = userResponse.getId();
+
+                        Toast.makeText(Authentication.this, id, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
         google = new Google(this);
+        mqtt = new MQTT(this);
+        restAPI = new RestAPI();
 
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
@@ -168,7 +196,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
                       networkInfos.isConnected();
 
         if(isConnected)
-            connectMQTT();
+            mqtt.connected();
         else {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.authenLayout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
@@ -177,35 +205,37 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     //Open Create Account Activity
     private void createAccount() {
-        Intent intent = new Intent(Authentication.this, CreateAccount.class);
-        startActivity(intent);
+        startActivity(new Intent(Authentication.this, CreateAccount.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
-    private void checkUser(quailSmartFarmApi qsfAPI) {
-        Call<Status> resCall = qsfAPI.checkUser("117699091589038964647");
-        resCall.enqueue(new Callback<Status>() {
+    private void setUser(String id, String data) {
+        Call<User> resCall = restAPI.getQsfService().checkUser(id);
+        resCall.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()) {
                     Log.e(TAG, String.valueOf(response.code()));
                     return;
                 }
 
-                String status = response.body().toString();
+                User userResponse = response.body();
+                String id = userResponse.getId();
 
-                Log.e(TAG, status);
-                publish("user/create", data);
+                Toast.makeText(Authentication.this, id, Toast.LENGTH_SHORT).show();
 
-                if(status.equals("Not Found"))
-                    Log.e(TAG, status);
-                    publish("user/create", data);
+//                Log.e(TAG, status);
+//                //publish("user/create", data);
+//
+//                if(status.equals("Not Found"))
+//                    Log.e(TAG, status);
+//                    //publish("user/create", data);
             }
 
             @Override
-            public void onFailure(Call<Status> call, Throwable t) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(Authentication.this, "Set User Fail", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -260,8 +290,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            checkUser(quailSmartFarmApi);
-            //publish("user/create", data);
+            setUser(personId, data);
+            //mqtt.publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
             //builder.setMessage(result);
@@ -276,36 +306,4 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void connectMQTT() {
-        clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(getApplicationContext(), MQTTHOST, clientId);
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setUserName(USERNAME);
-        options.setPassword(PASSWORD.toCharArray());
-
-        try {
-            token = client.connect(options);
-            token.setActionCallback(new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void publish(String topic, String message) {
-        try {
-            client.publish(topic, message.getBytes(), 0, false);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
 }

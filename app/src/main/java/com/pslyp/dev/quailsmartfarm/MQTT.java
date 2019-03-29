@@ -29,7 +29,7 @@ public class MQTT {
         this.context = context;
     }
 
-    public void connectMQTT() {
+    public void connected() {
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(context.getApplicationContext(), MQTTHOST, clientId);
         MqttConnectOptions options = new MqttConnectOptions();

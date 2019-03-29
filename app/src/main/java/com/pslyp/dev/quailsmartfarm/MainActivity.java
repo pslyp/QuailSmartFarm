@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button two, bluetooth, mqtt1, mqtt2, signOut_btn;
     TextView temp, bright, fanSta, lampSta;
     LinearLayout linearLayout1;
+
+    RestAPI restAPI;
 
     //MQTT
     MQTT mqtt;
@@ -163,7 +166,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initInstance() {
+        mqtt = new MQTT(this);
         google = new Google(this);
+        restAPI = new RestAPI();
 
         linearLayout1 = findViewById(R.id.linear_layout_1);
         temp = findViewById(R.id.text_view_temp);
@@ -200,8 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                               networkInfos.isConnected();
 
         if(isConnected) {
-            mqtt = new MQTT(this);
-            mqtt.connectMQTT();
+            mqtt.connected();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
             String id = sp.getString("id", "");
@@ -211,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             String user = (id + "-" + firstName + "-" + lastName + "-" + email);
 
-            //Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();3
 
             Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
             snackbar.show();

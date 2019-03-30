@@ -20,15 +20,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateAccount"></activity>
+        <activity android:name=".Gauge"></activity>
+        <activity android:name=".CreateAccount" />
         <activity android:name=".AddBoard" />
         <activity android:name=".LogIn">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.pslyp.dev.quailsmartfarm.Authentication">
-            </meta-data>
+                android:value="com.pslyp.dev.quailsmartfarm.Authentication"></meta-data>
         </activity>
-        <activity android:name=".Authentication" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Authentication"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Bluetooth" />
         <activity android:name=".configNetwork" />
         <activity

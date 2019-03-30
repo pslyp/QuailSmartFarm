@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 public class Internet extends AppCompatActivity {
 
-    ConnectivityManager connectivityManager;
-    NetworkInfo networkInfos;
+    static ConnectivityManager connectivityManager;
+    static NetworkInfo networkInfos;
 
     public Internet() {
         connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

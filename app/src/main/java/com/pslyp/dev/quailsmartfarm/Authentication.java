@@ -38,6 +38,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     SharedPreferences.Editor editor;
     final String PREF_NAME = "LoginPreferences";
 
+    //Internet
     boolean isConnected;
 
     RestAPI restAPI;
@@ -158,6 +159,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         // Set on click button
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
+        //Internet
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfos = connectivityManager.getActiveNetworkInfo();
 
@@ -192,7 +194,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
                String status = response.body().getStatus();
 
-               if(!status.equals("Found"))
+               if(status.equals("Not Found"))
                    mqtt.publish("user/create", data);
 
                Log.e("Response", status);

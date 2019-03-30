@@ -65,4 +65,5 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         startActivity(new Intent(AddBoard.this, MainActivity.class));
         finish();
     }
+
 }

@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Token"
-            android:text="gh51f5hr55gdfcue684fs61s6v3d54v8">
+            android:text="gh51f5hr55gdfcue684fs61s6v3d54v8"
+            android:enabled="false">
 
         </android.support.design.widget.TextInputEditText>
 

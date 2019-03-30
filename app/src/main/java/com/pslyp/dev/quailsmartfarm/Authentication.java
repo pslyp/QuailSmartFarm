@@ -21,17 +21,11 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.api.qsfService;
 import com.pslyp.dev.quailsmartfarm.models.Status;
-import com.pslyp.dev.quailsmartfarm.models.User;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Authentication extends AppCompatActivity implements View.OnClickListener {
 
@@ -154,62 +148,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         });
         */
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://quailsmartfarm.herokuapp.com")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final qsfService qsfService = retrofit.create(qsfService.class);
-
-//        Call<List<User>> call = qsfService.getUsers();
-//        call.enqueue(new Callback<List<User>>() {
-//            @Override
-//            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-//
-//
-//                List<User> userResponse = response.body();
-//
-//                String content = "";
-//                for(User user : userResponse) {
-//                    content += "ID:" + user.getId() + "\n";
-//                }
-//
-//                Toast.makeText(Authentication.this, content, Toast.LENGTH_SHORT).show();
-//                Log.e("Call Response", content);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<User>> call, Throwable t) {
-//
-//            }
-//        });
-
-        testAPI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Call<List<User>> call = qsfService.getUsers();
-                call.enqueue(new Callback<List<User>>() {
-                    @Override
-                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                        List<User> users = response.body();
-
-                        String content = "";
-                        for(User user : users) {
-                            content += "ID:" + user.getId() + "\n";
-                        }
-
-                        Toast.makeText(Authentication.this, content, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, content);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<User>> call, Throwable t) {
-
-                    }
-                });
-            }
-        });
-
         google = new Google(this);
         mqtt = new MQTT(this);
         restAPI = new RestAPI();
@@ -228,8 +166,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         if(isConnected) {
             mqtt.connected();
-
-            //setUser("117699091589038964647", data);
         }
         else {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.authenLayout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);

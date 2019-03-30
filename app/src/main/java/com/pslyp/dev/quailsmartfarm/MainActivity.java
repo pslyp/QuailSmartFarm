@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,10 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     DrawerLayout drawerLayout;
     NavigationView navigationView;
 
-    Button two, bluetooth, mqtt1, mqtt2, signOut_btn;
+    Button two, bluetooth;
+    LinearLayout linearLayout1, dashboard;
+    ProgressBar progressBar;
+    RelativeLayout no_dashboard;
     TextView temp, bright, fanSta, lampSta;
-    LinearLayout linearLayout1;
 
+    //Rest API
     RestAPI restAPI;
     ArrayList<String> tokenList;
 
@@ -77,46 +82,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!isLogin) {
             startActivity(new Intent(MainActivity.this, Authentication.class));
             finish();
+        } else {
+            initInstance();
         }
-
-        initInstance();
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_bluetooth:
-                Intent intent = new Intent(MainActivity.this, Bluetooth.class);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.button_mqtt1:
-                mqtt.publish("user/create", "432743278-PSlyp-Sali-phiphat.green@gmail.com");
-                break;
-            case R.id.button_mqtt2:
-                mqtt.publish("presence2", "MQTT2");
-                break;
-            case R.id.button_sign_out:
-
-                //Show dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to log out?");
-                builder.setPositiveButton("LOG OUT", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Sign out Google
-                        signOut();
-                    }
-                })
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                builder.show();
-                break;
-        }
+//        switch (view.getId()) {
+//
+//        }
     }
 
     @Override
@@ -183,23 +158,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tokenList = new ArrayList<String>();
 
+        progressBar = findViewById(R.id.progress_bar);
         linearLayout1 = findViewById(R.id.linear_layout_1);
+        dashboard = findViewById(R.id.linear_layout_dashboard);
+        no_dashboard = findViewById(R.id.relative_layout_no_dashboard);
         temp = findViewById(R.id.text_view_temp);
         bright = findViewById(R.id.text_view_bright);
-        two = findViewById(R.id.button_two);
         fanSta = findViewById(R.id.text_view_fan_status);
         lampSta = findViewById(R.id.text_view_lamp_status);
-        bluetooth = findViewById(R.id.button_bluetooth);
-        mqtt1 = findViewById(R.id.button_mqtt1);
-        mqtt2 = findViewById(R.id.button_mqtt2);
-        signOut_btn = findViewById(R.id.button_sign_out);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-
-        findViewById(R.id.button_bluetooth).setOnClickListener(this);
-        findViewById(R.id.button_mqtt1).setOnClickListener(this);
-        findViewById(R.id.button_mqtt2).setOnClickListener(this);
-        findViewById(R.id.button_sign_out).setOnClickListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -218,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                               networkInfos.isConnected();
 
         if(isConnected) {
+            setDashboard();
+
             mqtt.connected();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -226,35 +196,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String lastName = sp.getString("last_name", "");
             String email = sp.getString("email", "");
 
-            //String user = (id + "-" + firstName + "-" + lastName + "-" + email);
-
-            Call<User> call = restAPI.getQsfService().getBoard("117699091589038964647");
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    User user = response.body();
-
-                    List<Board> boards = user.getBoard();
-
-                    if(boards != null) {
-                        String b = "";
-                        for (Board board : boards) {
-                            b += board.getToken();
-                            tokenList.add(board.getToken());
-                        }
-
-                        Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
-                        Log.e("Response", b);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-
-                }
-            });
-
-            //Toast.makeText(this, token.toString(), Toast.LENGTH_SHORT).show();3
 
             Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
@@ -265,12 +206,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             snackbar.show();
         }
 
-        two.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setDashboard() {
+        dashboard.setVisibility(View.INVISIBLE);
+        no_dashboard.setVisibility(View.INVISIBLE);
+
+        Call<User> call = restAPI.getQsfService().getBoard("117699091589038964647");
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onClick(View v) {
-                Intent two = new Intent(MainActivity.this, configNetwork.class);
-                startActivity(two);
-                finish();
+            public void onResponse(Call<User> call, Response<User> response) {
+                User user = response.body();
+
+                try {
+                    List<Board> boards = user.getBoard();
+
+                    if(boards.size() != 0) {
+                        dashboard.setVisibility(View.VISIBLE);
+
+                        String b = "";
+                        for (Board board : boards) {
+                            b += board.getToken();
+                            tokenList.add(board.getToken());
+                        }
+
+                        Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
+                        Log.e("Set Dashboard", b);
+                    } else {
+                        no_dashboard.setVisibility(View.VISIBLE);
+                    }
+                } catch (NullPointerException e) {
+                    no_dashboard.setVisibility(View.VISIBLE);
+                    Log.e("Set Dashboard", e.toString());
+                }
+
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("Set Dashboard", t.toString());
             }
         });
     }

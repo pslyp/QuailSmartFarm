@@ -22,6 +22,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Status;
+import com.pslyp.dev.quailsmartfarm.models.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,9 +50,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     //Google Sign-in
     Google google;
-
-    //MQTT
-    MQTT mqtt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +148,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         */
 
         google = new Google(this);
-        mqtt = new MQTT(this);
         restAPI = new RestAPI();
 
         // Set the dimensions of the sign-in button.
@@ -166,10 +163,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         isConnected = networkInfos != null &&
                       networkInfos.isConnected();
 
-        if(isConnected) {
-            mqtt.connected();
-        }
-        else {
+        if(!isConnected) {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.authenLayout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         }
@@ -182,29 +176,45 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
-    private void setUser(String id, final String data) {
-       Call<Status> call = restAPI.getQsfService().checkUser(id);
-       call.enqueue(new Callback<Status>() {
-           @Override
-           public void onResponse(Call<Status> call, Response<Status> response) {
-               if(!response.isSuccessful()) {
-                   Log.e("Response", "not success");
-                   return;
-               }
+    private void setUser(String id, final User user) {
+        Call<Status> call = restAPI.getQsfService().checkUser(id);
+        call.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if(!response.isSuccessful()) {
+                    Log.e("Response", "not success");
+                    return;
+                }
 
-               String status = response.body().getStatus();
+                String status = response.body().getStatus();
 
-               if(status.equals("Not Found"))
-                   mqtt.publish("user/create", data);
+                if(status.equals("Not Found"))
+                    //mqtt.publish("user/create", data);
+                    createUser(user);
 
-               Log.e("Response", status);
-           }
+                Log.e("Response", status);
+            }
 
-           @Override
-           public void onFailure(Call<Status> call, Throwable t) {
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
                 Log.e("Response" , "Fail");
-           }
-       });
+            }
+        });
+    }
+
+    private void createUser(User user) {
+        Call<User> call = restAPI.getQsfService().createUser(user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
     }
 
     //Open Login Activity
@@ -257,7 +267,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            setUser(personId, data);
+            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail));
             //mqtt.publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);

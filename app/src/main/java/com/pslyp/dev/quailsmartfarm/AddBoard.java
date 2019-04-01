@@ -72,7 +72,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 
 //        mqtt.publish("user/data/token/insert", (id + "-" + t + "-" + n));
 
-        Call<Board> call = restAPI.getQsfService().insertBoard(id, new Board(t, n));
+        Call<Board> call = restAPI.getQsfService().updateBoard(id, new Board(t, n));
         call.enqueue(new Callback<Board>() {
             @Override
             public void onResponse(Call<Board> call, Response<Board> response) {

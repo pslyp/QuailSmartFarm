@@ -12,6 +12,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -38,7 +39,7 @@ public interface qsfService {
             @Field("email") String email
     );
 
-    @POST("user/{id}")
-    Call<Board> insertBoard(@Path("id") String id, @Body Board board);
+    @PUT("user/{id}")
+    Call<Board> updateBoard(@Path("id") String id, @Body Board board);
 
 }

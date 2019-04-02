@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -71,12 +72,14 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         String n = name.getEditText().getText().toString();
 
 //        mqtt.publish("user/data/token/insert", (id + "-" + t + "-" + n));
+        Log.e("Add", id);
 
         Call<Board> call = restAPI.getQsfService().updateBoard(id, new Board(t, n));
         call.enqueue(new Callback<Board>() {
             @Override
             public void onResponse(Call<Board> call, Response<Board> response) {
-
+                startActivity(new Intent(AddBoard.this, MainActivity.class));
+                finish();
             }
 
             @Override
@@ -84,9 +87,6 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 
             }
         });
-
-        startActivity(new Intent(AddBoard.this, MainActivity.class));
-        finish();
     }
 
 }

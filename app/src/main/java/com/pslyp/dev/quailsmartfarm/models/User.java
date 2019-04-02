@@ -8,7 +8,14 @@ public class User {
     private String firstname;
     private String lastname;
     private String email;
+    private String password;
     private List<Board> board;
+
+    public User(String id, String email, String password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
 
     public User(String id, String firstname, String lastname, String email) {
         this.id = id;
@@ -31,6 +38,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public List<Board> getBoard() {

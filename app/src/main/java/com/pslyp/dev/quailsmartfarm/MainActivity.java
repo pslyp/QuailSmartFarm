@@ -45,6 +45,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
+    //Rest API
+    RestAPI restAPI;
+    ArrayList<String> tokenList;
+
+    //MQTT
+    MQTT mqtt;
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
 
@@ -54,13 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RelativeLayout no_dashboard;
     TextView temp, bright, fanSta, lampSta;
 
-    //Rest API
-    RestAPI restAPI;
-    ArrayList<String> tokenList;
-
-    //MQTT
-    MQTT mqtt;
-
     //Shared Preferences
     SharedPreferences sp;
     SharedPreferences.Editor editor;
@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Google Sign out
     private Google google;
+
+    //private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,16 +193,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                               networkInfos.isConnected();
 
         if(isConnected) {
-            setDashboard();
-
             mqtt.connected();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
             String id = sp.getString("id", "");
             String firstName = sp.getString("first_name", "");
             String lastName = sp.getString("last_name", "");
-            String email = sp.getString("email", "");
+            String email = sp.getString("email_text", "");
 
+            setDashboard(id);
 
             Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
@@ -213,11 +214,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setDashboard() {
+    private void setDashboard(String id) {
         dashboard.setVisibility(View.INVISIBLE);
         no_dashboard.setVisibility(View.INVISIBLE);
 
-        Call<User> call = restAPI.getQsfService().getBoard("117699091589038964647");
+        Log.e("ID", id);
+
+        Call<User> call = restAPI.getQsfService().getBoard(id);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

@@ -21,14 +21,17 @@ public interface qsfService {
     @GET("user")
     Call<List<User>> getUsers();
 
-    @GET("user/{id}/board")
-    Call<User> getBoard(@Path("id") String id);
-
     @GET("user")
     Call<Status> checkUser(@Query("id") String id);
 
-    @POST("user/create")
-    Call<User> createUser(@Body User user);
+    @GET("user/login")
+    Call<User> logIn(@Query("email") String email, @Query("pass") String pass);
+
+    @GET("user/{id}/board")
+    Call<User> getBoard(@Path("id") String id);
+
+    @POST("user")
+    Call<Status> createUser(@Body User user);
 
     @FormUrlEncoded
     @POST("user")

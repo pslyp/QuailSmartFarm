@@ -124,7 +124,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
         /*
         loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
+        loginButton.setReadPermissions("email_text");
         // If using in a fragment
         loginButton.setFragment(this);
 
@@ -172,8 +172,8 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     //Open Create Account Activity
     private void createAccount() {
         startActivity(new Intent(Authentication.this, CreateAccount.class));
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        finish();
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //finish();
     }
 
     private void setUser(String id, final User user) {
@@ -203,15 +203,15 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     private void createUser(User user) {
-        Call<User> call = restAPI.getQsfService().createUser(user);
-        call.enqueue(new Callback<User>() {
+        Call<Status> call = restAPI.getQsfService().createUser(user);
+        call.enqueue(new Callback<Status>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<Status> call, Response<Status> response) {
 
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Status> call, Throwable t) {
 
             }
         });
@@ -260,7 +260,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             editor.putString("id", personId);
             editor.putString("first_name", personGivenName);
             editor.putString("last_name", personFamilyName);
-            editor.putString("email", personEmail);
+            editor.putString("email_text", personEmail);
             editor.commit();
 
             data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);

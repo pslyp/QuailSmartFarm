@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.nav_gauge:
-                startActivity(new Intent(MainActivity.this, Gauge.class));
-                finish();
-                break;
-            case R.id.nav_sign_out:
+//            case R.id.nav_gauge :
+//                startActivity(new Intent(MainActivity.this, Gauge.class));
+//                finish();
+//                break;
+            case R.id.nav_sign_out :
 
                 //Show dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

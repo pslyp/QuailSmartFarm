@@ -76,7 +76,7 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
     }
 
     private void createAccount() {
-        String id = String.valueOf(Math.random() * 100);
+        String id = String.valueOf((int)(Math.random() * 100000) + 1);
         String email = email_text.getEditText().getText().toString();
         String pass = md5.create(pass_text.getEditText().getText().toString());
 

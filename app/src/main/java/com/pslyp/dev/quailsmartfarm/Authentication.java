@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -251,7 +250,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             String personFamilyName = account.getFamilyName();
             String personEmail = account.getEmail();
             String personId = account.getId();
-            Uri personPhoto = account.getPhotoUrl();
+            String personPhoto = account.getPhotoUrl().toString();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
@@ -261,6 +260,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             editor.putString("first_name", personGivenName);
             editor.putString("last_name", personFamilyName);
             editor.putString("email_text", personEmail);
+            editor.putString("url_photo", personPhoto);
             editor.commit();
 
             data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);

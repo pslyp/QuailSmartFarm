@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     NavigationView navigationView;
 
     Button two, bluetooth;
+    ImageView acc_pic;
     LinearLayout linearLayout1, dashboard;
     ProgressBar progressBar;
     RelativeLayout no_dashboard;
@@ -158,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initInstance() {
-
         mqtt = new MQTT(this);
         google = new Google(this);
         restAPI = new RestAPI();
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lampSta = findViewById(R.id.text_view_lamp_status);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        acc_pic = findViewById(R.id.image_view_account);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -200,6 +202,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String firstName = sp.getString("first_name", "");
             String lastName = sp.getString("last_name", "");
             String email = sp.getString("email_text", "");
+            String photo_url = sp.getString("url_photo", "");
+
+            Log.e("Photo", photo_url);
+
+            //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
 
             setDashboard(id);
 

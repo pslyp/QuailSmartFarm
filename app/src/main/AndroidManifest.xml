@@ -5,11 +5,14 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <dist:module dist:instant="true" />
 
@@ -20,24 +23,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Gauge"></activity>
+        <activity android:name=".DeviceList"></activity>
+        <activity android:name=".settings" />
+        <activity android:name=".configs.EsptouchDemoActivity" />
+        <activity android:name=".Gauge" />
         <activity android:name=".CreateAccount">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.pslyp.dev.quailsmartfarm.Authentication">
-            </meta-data>
+                android:value="com.pslyp.dev.quailsmartfarm.Authentication" />
         </activity>
         <activity android:name=".AddBoard" />
         <activity android:name=".LogIn">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.pslyp.dev.quailsmartfarm.Authentication">
-            </meta-data>
+                android:value="com.pslyp.dev.quailsmartfarm.Authentication" />
         </activity>
         <activity
             android:name=".Authentication"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Bluetooth" />
         <activity android:name=".configNetwork" />
         <activity
             android:name=".MainActivity"

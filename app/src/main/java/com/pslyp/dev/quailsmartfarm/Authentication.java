@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -32,6 +35,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     private static final String TAG = "ERROR";
     private TextView logInTV, createAccountTV, test;
     private Button testAPI;
+    private ImageView acc_pic;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -102,6 +106,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
         createAccountTV = findViewById(R.id.text_view_create_new_account);
         testAPI = findViewById(R.id.test_api_button);
         test = findViewById(R.id.test_text_view);
+        acc_pic = findViewById(R.id.image_view_account);
 
         findViewById(R.id.text_view_log_in).setOnClickListener(this);
         findViewById(R.id.text_view_create_new_account).setOnClickListener(this);
@@ -250,7 +255,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             String personFamilyName = account.getFamilyName();
             String personEmail = account.getEmail();
             String personId = account.getId();
-            String personPhoto = account.getPhotoUrl().toString();
+            Uri personPhoto = account.getPhotoUrl();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
@@ -260,8 +265,10 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             editor.putString("first_name", personGivenName);
             editor.putString("last_name", personFamilyName);
             editor.putString("email_text", personEmail);
-            editor.putString("url_photo", personPhoto);
+            //editor.putString("url_photo", personPhoto);
             editor.commit();
+
+            Glide.with(this).load(personPhoto).into(acc_pic);
 
             data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);
 

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
+import com.pslyp.dev.quailsmartfarm.configs.EsptouchDemoActivity;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
@@ -57,11 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     NavigationView navigationView;
 
     Button two, bluetooth;
-    ImageView acc_pic;
+    ImageView acc_pic, imageView;
     LinearLayout linearLayout1, dashboard;
     ProgressBar progressBar;
     RelativeLayout no_dashboard;
-    TextView temp, bright, fanSta, lampSta;
+    TextView temp, bright, fanSta, lampSta, emailAcc;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -115,11 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             case R.id.bluetooth_submenu:
                 //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, configNetwork.class));
+                startActivity(new Intent(MainActivity.this, settings.class));
                 finish();
                 return true;
             case R.id.wifi_submenu:
                 Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, EsptouchDemoActivity.class));
+                finish();
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
@@ -129,10 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-//            case R.id.nav_gauge :
-//                startActivity(new Intent(MainActivity.this, Gauge.class));
-//                finish();
-//                break;
+            case R.id.nav_gauge :
+                startActivity(new Intent(MainActivity.this, Gauge.class));
+                finish();
+                break;
             case R.id.nav_sign_out :
 
                 //Show dialog
@@ -176,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lampSta = findViewById(R.id.text_view_lamp_status);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        acc_pic = findViewById(R.id.image_view_account);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -206,7 +208,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             Log.e("Photo", photo_url);
 
-            //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
+            //emailAcc.setText(email);
+
+            //acc_pic.setImageResource(R.drawable.com_facebook_button_icon);
+
+            if(photo_url != null)
+                //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
 
             setDashboard(id);
 
@@ -231,28 +238,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                User user = response.body();
 
-                try {
+                int status = response.code();
+                if(status == 200) {
+                    dashboard.setVisibility(View.VISIBLE);
+
+                    User user = response.body();
                     List<Board> boards = user.getBoard();
 
-                    if(boards.size() != 0) {
-                        dashboard.setVisibility(View.VISIBLE);
-
-                        String b = "";
-                        for (Board board : boards) {
-                            b += board.getToken();
-                            tokenList.add(board.getToken());
-                        }
-
-                        Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
-                        Log.e("Set Dashboard", b);
-                    } else {
-                        no_dashboard.setVisibility(View.VISIBLE);
+                    String b = "";
+                    for (Board board : boards) {
+                        b += board.getToken();
+                        tokenList.add(board.getToken());
                     }
-                } catch (NullPointerException e) {
+
+                    Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
+                    Log.e("Set Dashboard", b);
+                } else if(status == 204) {
                     no_dashboard.setVisibility(View.VISIBLE);
-                    Log.e("Set Dashboard", e.toString());
                 }
 
                 progressBar.setVisibility(View.GONE);

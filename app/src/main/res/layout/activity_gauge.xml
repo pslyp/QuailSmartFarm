@@ -14,7 +14,7 @@
         android:padding="20dp"
         app:gaugePointStartColor="@color/colorPrimary"
         app:gaugePointEndColor="@color/com_facebook_blue"
-        app:gaugePointSize="1"
+        app:gaugePointSize="100"
         app:gaugeStartAngle="180"
         app:gaugeStrokeWidth="35dp"
         app:gaugeStartValue="0"
@@ -29,5 +29,22 @@
         android:layout_centerHorizontal="true"
         android:text="Add value"
         android:textSize="20dp"/>
+
+    <LinearLayout
+        android:id="@+id/linear_layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_2"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:background="@color/com_facebook_blue"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

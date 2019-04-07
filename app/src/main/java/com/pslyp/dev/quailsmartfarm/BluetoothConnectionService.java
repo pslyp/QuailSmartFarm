@@ -126,7 +126,7 @@ public class BluetoothConnectionService {
             Log.i(TAG, "RUN mConnectThread ");
 
             // Get a BluetoothSocket for a connection with the
-            // given BluetoothDevice
+            // given BTDevice
             try {
                 Log.d(TAG, "ConnectThread: Trying to create InsecureRfcommSocket using UUID: "
                         +MY_UUID_INSECURE );

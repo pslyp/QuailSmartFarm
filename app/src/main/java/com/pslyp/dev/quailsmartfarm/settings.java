@@ -13,6 +13,7 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
 
     BluetoothAdapter bluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
+    private static final int REQUEST_CONNECT_DEVICE = 2;
 
     Button device;
 
@@ -42,8 +43,9 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.button_bluetooth :
-
+            case R.id.button_device :
+                Intent deviceListIntent = new Intent(settings.this, DeviceList.class);
+                startActivityForResult(deviceListIntent, REQUEST_CONNECT_DEVICE);
                 break;
         }
     }

@@ -253,7 +253,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements View.OnCl
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 int frequency = info.getFrequency();
                 if (frequency > 4900 && frequency < 5900) {
-                    // Connected 5G wifi. BluetoothDevice does not support 5G
+                    // Connected 5G wifi. BTDevice does not support 5G
                     mMessageTV.setText(R.string.wifi_5g_message);
                 }
             }

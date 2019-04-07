@@ -1,5 +1,6 @@
 package com.pslyp.dev.quailsmartfarm.adapter;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -11,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pslyp.dev.quailsmartfarm.R;
-import com.pslyp.dev.quailsmartfarm.models.BluetoothDevice;
 
 import java.util.ArrayList;
 
@@ -35,13 +35,19 @@ public class DeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(mLayoutResId, null);
 
-        TextView deviceName = view.findViewById(R.id.text_view_name);
-        TextView deviceAddress = view.findViewById(R.id.text_view_address);
-
         BluetoothDevice device = mDeviceArrayList.get(position);
 
-        deviceName.setText(device.getName());
-        deviceAddress.setText(device.getAddress());
+        if(device != null) {
+            TextView deviceName = view.findViewById(R.id.text_view_name);
+            TextView deviceAddress = view.findViewById(R.id.text_view_address);
+
+            if(device.getName() != null) {
+                deviceName.setText(device.getName());
+            }
+            if(device.getAddress() != null) {
+                deviceAddress.setText(device.getAddress());
+            }
+        }
 
         return view;
     }

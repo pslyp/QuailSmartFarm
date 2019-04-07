@@ -1,12 +1,16 @@
 package com.pslyp.dev.quailsmartfarm.models;
 
-public class BluetoothDevice {
+public class BTDevice {
 
-    private final String name;
-    private final String address;
+    private String name = "";
+    private String address = "";
 
-    public BluetoothDevice(String name, String address) {
+    public BTDevice(String name) {
         this.name = name;
+    }
+
+    public BTDevice(String name, String address) {
+        this(name);
         this.address = address;
     }
 

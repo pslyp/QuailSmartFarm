@@ -21,10 +21,10 @@
         android:textSize="20sp" />
 
     <Button
-        android:id="@+id/button_refresh"
+        android:id="@+id/button_find"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:text="Refresh" />
+        android:text="find" />
 
 </FrameLayout>

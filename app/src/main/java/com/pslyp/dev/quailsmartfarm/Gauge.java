@@ -29,7 +29,7 @@ public class Gauge extends AppCompatActivity {
         gauge = findViewById(R.id.gauge1);
         button = findViewById(R.id.button_add_value);
         layout1 = findViewById(R.id.linear_layout_1);
-        layout2 = findViewById(R.id.linear_layout_2);
+        //layout2 = findViewById(R.id.linear_layout_2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

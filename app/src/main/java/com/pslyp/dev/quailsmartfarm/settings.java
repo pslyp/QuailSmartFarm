@@ -1,21 +1,27 @@
 package com.pslyp.dev.quailsmartfarm;
 
-import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.pslyp.dev.quailsmartfarm.adapter.DeviceListAdapter;
+
+import me.aflak.bluetooth.Bluetooth;
+import me.aflak.bluetooth.DiscoveryCallback;
 
 public class settings extends AppCompatActivity implements View.OnClickListener {
 
-    BluetoothAdapter bluetoothAdapter;
-    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_CONNECT_DEVICE = 2;
+    private Bluetooth mBluetooth = new Bluetooth(this);
+    private DeviceData deviceData;
+    private DeviceListAdapter adapter;
 
-    Button device;
+    private Button mButton;
+    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,40 +35,92 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetooth.onStart();
+        //mBluetooth.enable();
+        mBluetooth.showEnableDialog(settings.this);
+        //mBluetooth.startScanning();
 
-        if(bluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
-        }
-        if(!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
+//        if(!mBluetooth.isEnabled()) {
+//            mBluetooth.onStart();
+//            mBluetooth.showEnableDialog(this);
+//        }
+//        if(mBluetooth.isEnabled()) {
+//            mBluetooth.onStart();
+//        }
+    }
+
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//
+//        mBluetooth.onStop();
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mBluetooth.onStop();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.button_device :
-                Intent deviceListIntent = new Intent(settings.this, DeviceList.class);
-                startActivityForResult(deviceListIntent, REQUEST_CONNECT_DEVICE);
+            case R.id.button_find_device :
+                mBluetooth.startScanning();
+                //startActivity(new Intent(settings.this, DeviceList.class));
                 break;
         }
     }
 
     private void initInstance() {
-        device = findViewById(R.id.button_device);
-        device.setOnClickListener(this);
-    }
+        deviceData = new DeviceData();
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        mButton = findViewById(R.id.button_find_device);
+        findViewById(R.id.button_find_device).setOnClickListener(this);
+        mListView = findViewById(R.id.list_view_device);
 
-        if(requestCode == REQUEST_ENABLE_BT) {
-            if(resultCode == RESULT_OK) {
-                Toast.makeText(this, "Bluetooth enable", Toast.LENGTH_SHORT).show();
+        mBluetooth.setDiscoveryCallback(new DiscoveryCallback() {
+            @Override
+            public void onDiscoveryStarted() {
+                mButton.setEnabled(false);
+                Toast.makeText(settings.this, "Start discovery", Toast.LENGTH_SHORT).show();
             }
-        }
+
+            @Override
+            public void onDiscoveryFinished() {
+                mButton.setEnabled(true);
+                Toast.makeText(settings.this, "Stop discovery", Toast.LENGTH_SHORT).show();
+
+                mBluetooth.stopScanning();
+            }
+
+            @Override
+            public void onDeviceFound(BluetoothDevice device) {
+                Toast.makeText(settings.this, "Find device", Toast.LENGTH_SHORT).show();
+
+
+//                deviceData.deviceArrayList.add(device);
+//
+//                adapter = new DeviceListAdapter(settings.this, R.layout.device_item, deviceData.deviceArrayList);
+//                mListView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onDevicePaired(BluetoothDevice device) {
+
+            }
+
+            @Override
+            public void onDeviceUnpaired(BluetoothDevice device) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(settings.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 }

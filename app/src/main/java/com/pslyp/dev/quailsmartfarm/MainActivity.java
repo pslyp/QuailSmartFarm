@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.configs.EsptouchDemoActivity;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
@@ -116,14 +115,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             case R.id.bluetooth_submenu:
                 //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, Settings_2.class));
+                startActivity(new Intent(MainActivity.this, settings.class));
                 finish();
                 return true;
-            case R.id.wifi_submenu:
-                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, EsptouchDemoActivity.class));
-                finish();
-                return true;
+//            case R.id.wifi_submenu:
+//                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(MainActivity.this, EsptouchDemoActivity.class));
+//                finish();
+//                return true;
                 default:
                     return super.onOptionsItemSelected(item);
         }

@@ -88,6 +88,21 @@ public class DeviceList extends AppCompatActivity implements View.OnClickListene
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message message) {
+                switch (message.what) {
+                    case MessageConstants.MESSAGE_READ :
+                        byte[] readBuffer = (byte[]) message.obj;
+                        String tmpMsg = new String(readBuffer, 0, message.arg1);
+                        Toast.makeText(DeviceList.this, tmpMsg, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+                return false;
+            }
+        });
+
         //getPairDevices();
 
 //        bluetoothAdapter.startDiscovery();
@@ -118,19 +133,20 @@ public class DeviceList extends AppCompatActivity implements View.OnClickListene
 
     private void findDevices() {
         if (bluetoothAdapter.isEnabled()) {
-            //if(bluetoothAdapter.isDiscovering()) {
-            mTextView.setVisibility(View.GONE);
-            //mListView.setVisibility(View.GONE);
+            if(!bluetoothAdapter.isDiscovering()) {
+                //mTextView.setVisibility(View.GONE);
+                //mListView.setVisibility(View.GONE);
 
-            // bluetoothAdapter.cancelDiscovery();
-            //bluetoothAdapter.startDiscovery();
+                // bluetoothAdapter.cancelDiscovery();
+                bluetoothAdapter.startDiscovery();
 
-            // Register for broadcasts when a device is discovered.
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(receiver, filter);
+                // Register for broadcasts when a device is discovered.
+                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                registerReceiver(receiver, filter);
 
-            //mListView.refreshDrawableState();
-            //}
+                //mListView.refreshDrawableState();
+                //}
+            }
         }
     }
 
@@ -152,7 +168,7 @@ public class DeviceList extends AppCompatActivity implements View.OnClickListene
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (device != null) {
-                    mListView.setVisibility(View.VISIBLE);
+                    //mListView.setVisibility(View.VISIBLE);
 
                     String deviceName = device.getName();
                     String deviceHardwareAddress = device.getAddress(); // MAC address
@@ -211,11 +227,11 @@ public class DeviceList extends AppCompatActivity implements View.OnClickListene
             try {
                 mSocket.connect();
             } catch (IOException connectException) {
-//                try {
-//                    mSocket.close();
-//                } catch (IOException closeException) {
-//                    Log.e(TAG, "Could not close the client socket", closeException);
-//                }
+                try {
+                    mSocket.close();
+                } catch (IOException closeException) {
+                    Log.e(TAG, "Could not close the client socket", closeException);
+                }
                 return;
             }
             manageMyConnectedSocket(mSocket);
@@ -265,9 +281,9 @@ public class DeviceList extends AppCompatActivity implements View.OnClickListene
                 try {
                     numBytes = mInStream.read(mBuffer);
 
-                    String text = new String(mBuffer, 0);
-
-                    Toast.makeText(DeviceList.this, text, Toast.LENGTH_SHORT).show();
+//                    String text = new String(mBuffer, 0);
+//
+//                    Toast.makeText(DeviceList.this, text, Toast.LENGTH_SHORT).show();
 
                     Message readMsg = handler.obtainMessage(MessageConstants.MESSAGE_READ, numBytes, -1, mBuffer);
                     readMsg.sendToTarget();

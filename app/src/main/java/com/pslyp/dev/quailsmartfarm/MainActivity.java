@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             case R.id.bluetooth_submenu:
                 //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, settings.class));
+                startActivity(new Intent(MainActivity.this, Settings_2.class));
                 finish();
                 return true;
             case R.id.wifi_submenu:

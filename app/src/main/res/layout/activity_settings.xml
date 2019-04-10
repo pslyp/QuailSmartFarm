@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    tools:context=".settings">
+    tools:context=".Settings">
 
     <TextView
         android:id="@+id/text_view_name_board"

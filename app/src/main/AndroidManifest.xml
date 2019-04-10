@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".DeviceList" />
-        <activity android:name=".settings" />
+        <activity android:name=".Settings" />
         <activity android:name=".Gauge" />
         <activity android:name=".CreateAccount">
             <meta-data

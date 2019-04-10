@@ -1,7 +1,6 @@
 package com.pslyp.dev.quailsmartfarm;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,11 +13,12 @@ import com.pslyp.dev.quailsmartfarm.adapter.DeviceListAdapter;
 import me.aflak.bluetooth.Bluetooth;
 import me.aflak.bluetooth.DiscoveryCallback;
 
-public class settings extends AppCompatActivity implements View.OnClickListener {
+public class Settings extends AppCompatActivity implements View.OnClickListener {
 
     private Bluetooth mBluetooth = new Bluetooth(this);
     private DeviceData deviceData;
-    private DeviceListAdapter adapter;
+    private DeviceListAdapter deviceListAdapter;
+    private DiscoveryCallback discoveryCallback;
 
     private Button mButton;
     private ListView mListView;
@@ -36,8 +36,9 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
         super.onStart();
 
         mBluetooth.onStart();
+        mBluetooth.setCallbackOnUI(this);
         //mBluetooth.enable();
-        mBluetooth.showEnableDialog(settings.this);
+        mBluetooth.showEnableDialog(Settings.this);
         //mBluetooth.startScanning();
 
 //        if(!mBluetooth.isEnabled()) {
@@ -68,7 +69,7 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.button_find_device :
                 mBluetooth.startScanning();
-                //startActivity(new Intent(settings.this, DeviceList.class));
+                //startActivity(new Intent(Settings.this, DeviceList.class));
                 break;
         }
     }
@@ -84,26 +85,26 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
             @Override
             public void onDiscoveryStarted() {
                 mButton.setEnabled(false);
-                Toast.makeText(settings.this, "Start discovery", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Settings.this, "Start discovery", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDiscoveryFinished() {
                 mButton.setEnabled(true);
-                Toast.makeText(settings.this, "Stop discovery", Toast.LENGTH_SHORT).show();
-
-                mBluetooth.stopScanning();
+                Toast.makeText(Settings.this, "Stop discovery", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDeviceFound(BluetoothDevice device) {
-                Toast.makeText(settings.this, "Find device", Toast.LENGTH_SHORT).show();
+                discoveryCallback.onDeviceFound(device);
+
+                Toast.makeText(Settings.this, "Find device", Toast.LENGTH_SHORT).show();
 
 
-//                deviceData.deviceArrayList.add(device);
-//
-//                adapter = new DeviceListAdapter(settings.this, R.layout.device_item, deviceData.deviceArrayList);
-//                mListView.setAdapter(adapter);
+                deviceData.deviceArrayList.add(device);
+
+                deviceListAdapter = new DeviceListAdapter(Settings.this, R.layout.device_item, deviceData.deviceArrayList);
+                mListView.setAdapter(deviceListAdapter);
             }
 
             @Override
@@ -118,7 +119,7 @@ public class settings extends AppCompatActivity implements View.OnClickListener 
 
             @Override
             public void onError(String message) {
-                Toast.makeText(settings.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Settings.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
     }

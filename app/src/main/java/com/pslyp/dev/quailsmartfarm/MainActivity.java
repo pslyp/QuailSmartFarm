@@ -1,11 +1,14 @@
 package com.pslyp.dev.quailsmartfarm;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Google google;
 
     //private String id;
+    private final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         } else {
             initInstance();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+            if (permissionCheck != 0) {
+                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+            }
+        } else {
+            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
     }
 
@@ -115,14 +135,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             case R.id.bluetooth_submenu:
                 //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, Settings.class));
+                startActivity(new Intent(MainActivity.this, Setting.class));
                 finish();
                 return true;
-//            case R.id.wifi_submenu:
-//                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
-//                startActivity(new Intent(MainActivity.this, EsptouchDemoActivity.class));
-//                finish();
-//                return true;
+            case R.id.wifi_submenu:
+                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, SmartConfigWiFI.class));
+                finish();
+                return true;
                 default:
                     return super.onOptionsItemSelected(item);
         }

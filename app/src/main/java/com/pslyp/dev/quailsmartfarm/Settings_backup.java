@@ -10,38 +10,36 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pslyp.dev.quailsmartfarm.adapter.DeviceListAdapter;
 
 import java.util.ArrayList;
 
-import me.aflak.bluetooth.Bluetooth;
-import me.aflak.bluetooth.DiscoveryCallback;
-
-public class Settings extends AppCompatActivity implements View.OnClickListener {
-
-    private Bluetooth mBluetooth = new Bluetooth(this);
-    private DeviceData deviceData;
-    private DeviceListAdapter deviceListAdapter;
-    private DiscoveryCallback discoveryCallback;
-
-    BluetoothConnectionService mBluetoothConnection;
+public class Settings_backup extends AppCompatActivity implements View.OnClickListener, MessageConstants {
 
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothDevice mBluetoothDevice;
 
-    private Button mButton;
+    private BluetoothConnectionService mBluetoothConnection;
+
+    private DeviceData deviceData;
+    private DeviceListAdapter deviceListAdapter;
+
+    private Button mButton, btConfirm;
     private ListView mListView;
+    private TextInputLayout textInputSSID, textInputPASS;
 
-    private String TAG = "Settings";
-
-    public ArrayList<BluetoothDevice> deviceArrayList = new ArrayList<>();
+    private String TAG = "Settings_backup";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,39 +53,39 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
 
-        mBluetooth.onStart();
-        mBluetooth.setCallbackOnUI(this);
-        //mBluetooth.enable();
-        mBluetooth.showEnableDialog(Settings.this);
-        //mBluetooth.startScanning();
+        if(mBluetoothAdapter == null) {
+            Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
+        }
+        if(!mBluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "enableDisableBT: enabling BT.");
 
-//        if(!mBluetooth.isEnabled()) {
-//            mBluetooth.onStart();
-//            mBluetooth.showEnableDialog(this);
-//        }
-//        if(mBluetooth.isEnabled()) {
-//            mBluetooth.onStart();
-//        }
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBtIntent);
+        }
+
+        registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//
-//        mBluetooth.onStop();
-//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(mBroadcastState);
-        unregisterReceiver(mBroadcastScan);
+        unregisterReceiver(scanReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        unregisterReceiver(bluetoothReceiver);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.button_confirm :
+                send();
+                break;
             case R.id.button_find_device :
                 discovery();
                 break;
@@ -96,15 +94,18 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
     private void initInstance() {
         deviceData = new DeviceData();
+        deviceData.deviceArrayList = new ArrayList<>();
 
         mButton = findViewById(R.id.button_find_device);
-        findViewById(R.id.button_find_device).setOnClickListener(this);
+        mButton.setOnClickListener(this);
+        btConfirm = findViewById(R.id.button_confirm);
+        btConfirm.setOnClickListener(this);
         mListView = findViewById(R.id.list_view_device);
         mListView.setOnItemClickListener(mDeviceClickListener);
+        textInputSSID = findViewById(R.id.text_input_ssid);
+        textInputPASS = findViewById(R.id.text_input_password);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        isEnableBT();
     }
 
     private AdapterView.OnItemClickListener mDeviceClickListener = new AdapterView.OnItemClickListener() {
@@ -114,8 +115,8 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
 
             Log.d(TAG, "onItemClick: You Clicked on a device.");
 
-            String deviceName = deviceArrayList.get(i).getName();
-            String deviceAddress = deviceArrayList.get(i).getAddress();
+            String deviceName = deviceData.deviceArrayList.get(i).getName();
+            String deviceAddress = deviceData.deviceArrayList.get(i).getAddress();
 
             Log.d(TAG, "onItemClick: deviceName = " + deviceName);
             Log.d(TAG, "onItemClick: deviceAddress = " + deviceAddress);
@@ -125,68 +126,62 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
             if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
                 Log.d(TAG, "Trying to pair with " + deviceName);
 
-                deviceArrayList.get(i).createBond();
+                deviceData.deviceArrayList.get(i).createBond();
 
-                mBluetoothDevice = deviceArrayList.get(i);
-                mBluetoothConnection = new BluetoothConnectionService(Settings.this);
+                mBluetoothDevice = deviceData.deviceArrayList.get(i);
+                mBluetoothConnection = new BluetoothConnectionService(Settings_backup.this);
             }
         }
     };
 
-    private void isEnableBT() {
-        if(mBluetoothAdapter == null) {
-            Log.d(TAG, "enableDisableBT: Does not have BT capabilities.");
-        }
-        if(!mBluetoothAdapter.isEnabled()) {
-            Log.d(TAG, "enableDisableBT: enabling BT.");
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
 
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBtIntent);
+            switch (msg.what) {
+                case MESSAGE_READ:
+                    byte[] readBuff = (byte[]) msg.obj;
+                    String text = new String(readBuff, 0 , msg.arg1);
+                    textInputPASS.getEditText().setText(text);
+                    break;
+            }
 
-            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mBroadcastState, filter);
+            return true;
         }
-        if(mBluetoothAdapter.isEnabled()) {
-            Log.d(TAG, "enableDisableBT: disabling BT.");
-            mBluetoothAdapter.disable();
-
-            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mBroadcastState, filter);
-        }
-    }
+    });
 
     private void discovery() {
         Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
 
-        if(mBluetoothAdapter.isDiscovering()){
-            mBluetoothAdapter.cancelDiscovery();
-            Log.d(TAG, "btnDiscover: Canceling discovery.");
-
-            //check BT permissions in manifest
-            checkPermissions();
+        if(!mBluetoothAdapter.isDiscovering()) {
+            //checkPermissions();
 
             mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastScan, discoverDevicesIntent);
-        }
-        if(!mBluetoothAdapter.isDiscovering()){
 
-            //check BT permissions in manifest
-            checkPermissions();
-
-            mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastScan, discoverDevicesIntent);
+            IntentFilter discoverFilter = new IntentFilter();
+            discoverFilter.addAction(BluetoothDevice.ACTION_FOUND);
+            discoverFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            discoverFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            registerReceiver(scanReceiver, discoverFilter);
         }
     }
 
+    private void send() {
+        String text = textInputSSID.getEditText().getText().toString();
+
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+
+
+        //mBluetoothConnection.write(text.getBytes());
+    }
+
     // Create a BroadcastReceiver for ACTION_FOUND
-    private final BroadcastReceiver mBroadcastState = new BroadcastReceiver() {
+    private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+            final String action = intent.getAction();
             // When discovery finds a device
-            if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
                 switch(state){
                     case BluetoothAdapter.STATE_OFF:
@@ -248,22 +243,34 @@ public class Settings extends AppCompatActivity implements View.OnClickListener 
      * Broadcast Receiver for listing devices that are not yet paired
      * -Executed by btnDiscover() method.
      */
-    private BroadcastReceiver mBroadcastScan = new BroadcastReceiver() {
+    private BroadcastReceiver scanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            Log.d(TAG, "onReceive: ACTION FOUND.");
+            String action = intent.getAction();
 
-            if (action.equals(BluetoothDevice.ACTION_FOUND)){
-                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                deviceArrayList.add(device);
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                deviceListAdapter = new DeviceListAdapter(context, R.layout.device_item, deviceArrayList);
-                mListView.setAdapter(deviceListAdapter);
+            switch (action) {
+                case BluetoothDevice.ACTION_FOUND:
+                    Log.d(TAG, "onReceive: ACTION FOUND.");
+
+                    if (action.equals(BluetoothDevice.ACTION_FOUND)){
+                        BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
+                        deviceData.deviceArrayList.add(device);
+
+                        Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                        deviceListAdapter = new DeviceListAdapter(context, R.layout.device_item, deviceData.deviceArrayList);
+                        mListView.setAdapter(deviceListAdapter);
+                    }
+                    break;
+                case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                    mButton.setEnabled(false);
+                    break;
+                case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                    mButton.setEnabled(true);
+                    break;
+
             }
         }
     };
-
 
     /**
      * This method is required for all devices running API23+

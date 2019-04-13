@@ -181,41 +181,48 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
     }
 
     private void setUser(String id, final User user) {
-        Call<Status> call = restAPI.getQsfService().checkUser(id);
-        call.enqueue(new Callback<Status>() {
+        Call<User> call = restAPI.getQsfService().checkUser(id);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
-                if(!response.isSuccessful()) {
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) {
                     Log.e("Response", "not success");
                     return;
                 }
 
-                String status = response.body().getStatus();
-
-                if(status.equals("Not Found"))
-                    //mqtt.publish("user/create", data);
+                int status = response.code();
+                if (status == 204) {
+                    Toast.makeText(Authentication.this, "User sum", Toast.LENGTH_SHORT).show();
                     createUser(user);
-
-                Log.e("Response", status);
+                }
             }
 
             @Override
-            public void onFailure(Call<Status> call, Throwable t) {
-                Log.e("Response" , "Fail");
+            public void onFailure(Call<User> call, Throwable t) {
+
             }
         });
     }
 
     private void createUser(User user) {
-        Call<Status> call = restAPI.getQsfService().createUser(user);
-        call.enqueue(new Callback<Status>() {
+        Call<User> call = restAPI.getQsfService().createUser(user);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(!response.isSuccessful()) {
+                    Log.e("Response", "not success");
+                    return;
+                }
 
+//                int status = response.code();
+//                if(status == 200) {
+//                    startActivity(new Intent(Authentication.this, MainActivity.class));
+//                    finish();
+//                }
             }
 
             @Override
-            public void onFailure(Call<Status> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
 
             }
         });
@@ -282,7 +289,6 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             //builder.show();
 
             Intent intent = new Intent(Authentication.this, MainActivity.class);
-            //intent.putExtra("user", data);
             startActivity(intent);
             finish();
         } else {

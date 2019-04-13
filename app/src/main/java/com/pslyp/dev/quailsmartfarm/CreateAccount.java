@@ -1,5 +1,6 @@
 package com.pslyp.dev.quailsmartfarm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.encrypt.MD5;
@@ -76,31 +78,31 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
     }
 
     private void createAccount() {
-        String id = String.valueOf(Math.random() * 100);
+        String id = String.valueOf((int)(Math.random() * 10000) + 1);
         String email = email_text.getEditText().getText().toString();
         String pass = md5.create(pass_text.getEditText().getText().toString());
 
-        //Toast.makeText(this, "Create Account", Toast.LENGTH_SHORT).show();
-
         User user = new User(id, email, pass);
 
-        Call<Status> call = restAPI.getQsfService().createUser(user);
-        call.enqueue(new Callback<Status>() {
+        Call<User> call = restAPI.getQsfService().createUser(user);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Status> call, Response<Status> response) {
-                if(!response.isSuccessful()) {
-                    Log.e("Create", "Not");
-                    return;
-                }
+            public void onResponse(Call<User> call, Response<User> response) {
+                int status = response.code();
 
-                if(response.body().getStatus().equals("success")) {
+                if(status == 200) {
+                    Toast.makeText(CreateAccount.this, "Create Success", Toast.LENGTH_SHORT).show();
+
+                    startActivity(new Intent(CreateAccount.this, Authentication.class));
                     finish();
+                } else if(status == 204) {
+
                 }
             }
 
             @Override
-            public void onFailure(Call<Status> call, Throwable t) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(CreateAccount.this, "Fail", Toast.LENGTH_SHORT).show();
             }
         });
     }

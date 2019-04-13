@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
@@ -38,12 +40,13 @@ public class BluetoothConnectionService {
 
     private ConnectedThread mConnectedThread;
 
+    private Handler handler;
+
     public BluetoothConnectionService(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         start();
     }
-
 
     /**
      * This thread runs while listening for incoming connections. It behaves
@@ -255,6 +258,12 @@ public class BluetoothConnectionService {
                 try {
                     bytes = mmInStream.read(buffer);
                     String incomingMessage = new String(buffer, 0, bytes);
+
+                    Message readMsg = handler.obtainMessage(
+                            MessageConstants.MESSAGE_READ, bytes, -1,
+                            buffer);
+                    readMsg.sendToTarget();
+
                     Log.d(TAG, "InputStream: " + incomingMessage);
                 } catch (IOException e) {
                     Log.e(TAG, "write: Error reading Input Stream. " + e.getMessage() );

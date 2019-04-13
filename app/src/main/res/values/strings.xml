@@ -14,6 +14,10 @@
     <string name="text_fan">Fan</string>
     <string name="text_lamp">Light</string>
 
+    //Bluetooth BLE
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+
     //WiFi Smart Configs
     <string name="menu_item_about">About App</string>
     <string name="about_app_version">App Version: %s</string>

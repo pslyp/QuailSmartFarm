@@ -10,4 +10,12 @@
             android:title="Sign Out" />
     </group>
 
+    <item android:title="Board">
+        <menu>
+            <item
+                android:id="@+id/ssaf"
+                android:title="Hello"/>
+        </menu>
+    </item>
+
 </menu>

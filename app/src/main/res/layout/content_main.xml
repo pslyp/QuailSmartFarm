@@ -19,6 +19,7 @@
         android:id="@+id/linear_layout_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <LinearLayout
@@ -134,6 +135,7 @@
         android:id="@+id/relative_layout_no_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
@@ -142,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="No Dashboard"
-            android:textSize="30sp"/>
+            android:textSize="30sp" />
 
     </RelativeLayout>
 

@@ -2,10 +2,13 @@ package com.pslyp.dev.quailsmartfarm;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -13,6 +16,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,17 +47,27 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
+    //Permission request code
+    private final int CAMERA_PERMISSION   = 1001;
+    private final int LOCATION_PERMISSION = 1002;
+
+    private final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2000;
+
     //Rest API
-    RestAPI restAPI;
-    ArrayList<String> tokenList;
+    private RestAPI restAPI;
+    private ArrayList<String> tokenList;
+    private int index = 0;
 
     //MQTT
     MQTT mqtt;
@@ -82,6 +98,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         //SharedPreferences
         sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
@@ -92,22 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         } else {
             initInstance();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-            if (permissionCheck != 0) {
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
-            }
-        } else {
-            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
     }
 
@@ -129,9 +135,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.add_menu:
                 //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, AddBoard.class);
-                startActivity(intent);
-                finish();
+//                Intent intent = new Intent(MainActivity.this, AddBoard.class);
+//                startActivity(intent);
+//                finish();
+//                AddBoardDialog addBoardDialog = new AddBoardDialog();
+//                addBoardDialog.show(getSupportFragmentManager(), "add board");
                 return true;
             case R.id.bluetooth_submenu:
                 //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
@@ -186,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         google = new Google(this);
         restAPI = new RestAPI();
 
-        tokenList = new ArrayList<String>();
+        tokenList = new ArrayList<>();
 
         progressBar = findViewById(R.id.progress_bar);
         linearLayout1 = findViewById(R.id.linear_layout_1);
@@ -215,15 +223,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean isConnected = networkInfos != null &&
                               networkInfos.isConnected();
 
+        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        String id = sp.getString("id", "");
+        String firstName = sp.getString("first_name", "");
+        String lastName = sp.getString("last_name", "");
+        String email = sp.getString("email_text", "");
+        String photo_url = sp.getString("url_photo", "");
+
         if(isConnected) {
             mqtt.connected();
-
-            sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-            String id = sp.getString("id", "");
-            String firstName = sp.getString("first_name", "");
-            String lastName = sp.getString("last_name", "");
-            String email = sp.getString("email_text", "");
-            String photo_url = sp.getString("url_photo", "");
 
             Log.e("Photo", photo_url);
 
@@ -231,10 +239,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //acc_pic.setImageResource(R.drawable.com_facebook_button_icon);
 
-            if(photo_url != null)
+            //if(photo_url != null)
                 //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
+                //
+            getBoardList(id);
 
-            setDashboard(id);
+//            if(!tokenList.isEmpty()) {
+//                setDashBoard(tokenList);
+//                Toast.makeText(this, "Token not empty", Toast.LENGTH_SHORT).show();
+//
+//                for(String token : tokenList) {
+//                    Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+//                }
+//            }
 
             Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
@@ -247,10 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setDashboard(String id) {
-        dashboard.setVisibility(View.INVISIBLE);
-        no_dashboard.setVisibility(View.INVISIBLE);
-
+    private void getBoardList(String id) {
         Log.e("ID", id);
 
         Call<User> call = restAPI.getQsfService().getBoard(id);
@@ -260,8 +274,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 int status = response.code();
                 if(status == 200) {
-                    dashboard.setVisibility(View.VISIBLE);
-
                     User user = response.body();
                     List<Board> boards = user.getBoard();
 
@@ -271,13 +283,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         tokenList.add(board.getToken());
                     }
 
+                    setDashBoard(tokenList);
+
                     Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
                     Log.e("Set Dashboard", b);
                 } else if(status == 204) {
-                    no_dashboard.setVisibility(View.VISIBLE);
-                }
+                    tokenList.clear();
 
-                progressBar.setVisibility(View.GONE);
+                    setDashBoard(tokenList);
+                }
             }
 
             @Override
@@ -285,6 +299,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("Set Dashboard", t.toString());
             }
         });
+    }
+
+    private void setDashBoard(List<String> tokenList) {
+        if(!tokenList.isEmpty()) {
+            Log.e("Board", "not empty");
+
+            dashboard.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        } else {
+            no_dashboard.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void callBack() {
@@ -296,32 +322,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature"))
+                if(topic.equals(tokenList.get(index) + "/temperature"))
                     temp.setText(new String(message.getPayload()));
-                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness"))
+                if(topic.equals(tokenList.get(index) + "/brightness"))
                     bright.setText(new String(message.getPayload()));
-                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus"))
+                if(topic.equals(tokenList.get(index) + "/fanStatus"))
                     fanSta.setText(new String(message.getPayload()));
-                if(topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus"))
+                if(topic.equals(tokenList.get(index) + "/lampStatus"))
                     lampSta.setText(new String(message.getPayload()));
-
-                /*
-                switch (topic) {
-                    case "temperature":
-                        temp.setText(new String(message.getPayload()));
-                        break;
-                    case "brightness":
-                        bright.setText(new String(message.getPayload()));
-                        break;
-                    case "fanStatus":
-                        fanSta.setText(new String(message.getPayload()));
-                        break;
-                    case "lampStatus":
-                        lampSta.setText(new String(message.getPayload()));
-                        break;
-                    default: break;
-                }
-                */
             }
 
             @Override
@@ -347,4 +355,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
     }
+
+//    private boolean addPermission(Activity activity, Context context, List<String> permissionsList, String permission) {
+//        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+//            permissionsList.add(permission);
+//            // Check for Rationale Option
+//            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission))
+//                return false;
+//        }
+//        return true;
+//    }
 }

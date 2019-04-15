@@ -2,11 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
         android:id="@+id/add_menu"
         android:icon="@drawable/ic_add_black_24dp"
         android:title="Add board"
-        app:showAsAction="always" />
+        app:showAsAction="always" >
+
+        <menu>
+            <item
+                android:id="@+id/qr_code_submenu"
+                android:icon="@drawable/ic_qr_code"
+                android:title="QR Code" />
+
+            <item
+                android:id="@+id/search_submenu"
+                android:icon="@drawable/ic_search_black_24dp"
+                android:title="Search" />
+        </menu>
+    </item>
 
     <item
         android:id="@+id/setting_menu"

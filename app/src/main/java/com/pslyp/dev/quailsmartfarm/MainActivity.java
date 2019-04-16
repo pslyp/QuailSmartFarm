@@ -1,127 +1,32 @@
 package com.pslyp.dev.quailsmartfarm;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.models.Board;
-import com.pslyp.dev.quailsmartfarm.models.User;
+public class MainActivity extends AppCompatActivity {
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
-
-    //Permission request code
-    private final int CAMERA_PERMISSION   = 1001;
-    private final int LOCATION_PERMISSION = 1002;
-
-    private final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2000;
-
-    //Rest API
-    private RestAPI restAPI;
-    private ArrayList<String> tokenList;
-    private int index = 0;
-
-    //MQTT
-    MQTT mqtt;
-
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-
-    Button two, bluetooth;
-    ImageView acc_pic, imageView;
-    LinearLayout linearLayout1, dashboard;
-    ProgressBar progressBar;
-    RelativeLayout no_dashboard;
-    TextView temp, bright, fanSta, lampSta, emailAcc;
-
-    //Shared Preferences
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
-    final String PREF_NAME = "LoginPreferences";
-
-    //Google Sign out
-    private Google google;
-
-    //private String id;
-    private final String TAG = "MainActivity";
+    private final String PREF_NAME = "LoginPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    }
+        initInstance();
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        //SharedPreferences
-        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-
-        //Check Login
-        boolean isLogin = sp.getBoolean("log_in", false);
-        if(!isLogin) {
-            startActivity(new Intent(MainActivity.this, Authentication.class));
-            finish();
-        } else {
-            initInstance();
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-//        switch (view.getId()) {
-//
-//        }
     }
 
     @Override
@@ -131,238 +36,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_menu:
-                //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(MainActivity.this, AddBoard.class);
-//                startActivity(intent);
-//                finish();
-//                AddBoardDialog addBoardDialog = new AddBoardDialog();
-//                addBoardDialog.show(getSupportFragmentManager(), "add board");
-                return true;
-            case R.id.bluetooth_submenu:
-                //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, Setting.class));
-                finish();
-                return true;
-            case R.id.wifi_submenu:
-                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, SmartConfigWiFI.class));
-                finish();
-                return true;
-                default:
-                    return super.onOptionsItemSelected(item);
+    protected void onStart() {
+        super.onStart();
+
+        //Check Login
+        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        boolean isLogIn = sp.getBoolean("LOG_IN", false);
+
+        if(!isLogIn) {
+            startActivity(new Intent(MainActivity.this, Authentication.class));
+            finish();
+        } else {
+            loadFragment(new HomeFragment());
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.nav_gauge :
-                startActivity(new Intent(MainActivity.this, Gauge.class));
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_menu:
+                //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, AddBoard.class));
                 finish();
-                break;
-            case R.id.nav_sign_out :
-
-                //Show dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to log out?");
-                builder.setPositiveButton("LOG OUT", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Sign out Google
-                        signOut();
-                    }
-                })
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-                builder.show();
-                break;
+//                AddBoardDialog addBoardDialog = new AddBoardDialog();
+//                addBoardDialog.show(getSupportFragmentManager(), "add board");
+                return true;
+//            case R.id.bluetooth_submenu:
+//                //Toast.makeText(this, "Bluetooth", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(MainActivity.this, Setting.class));
+//                finish();
+//                return true;
+//            case R.id.wifi_submenu:
+//                Toast.makeText(this, "WiFi", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(MainActivity.this, SmartConfigWiFI.class));
+//                finish();
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private void initInstance() {
-        mqtt = new MQTT(this);
-        google = new Google(this);
-        restAPI = new RestAPI();
-
-        tokenList = new ArrayList<>();
-
-        progressBar = findViewById(R.id.progress_bar);
-        linearLayout1 = findViewById(R.id.linear_layout_1);
-        dashboard = findViewById(R.id.linear_layout_dashboard);
-        no_dashboard = findViewById(R.id.relative_layout_no_dashboard);
-        temp = findViewById(R.id.text_view_temp);
-        bright = findViewById(R.id.text_view_bright);
-        fanSta = findViewById(R.id.text_view_fan_status);
-        lampSta = findViewById(R.id.text_view_lamp_status);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
 
-        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment fragment;
+            switch (menuItem.getItemId()) {
+                case R.id.navigation_home:
+                    fragment = new HomeFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.navigation_configs:
+                    return true;
+                case R.id.navigation_me:
+                    fragment = new MeFragment();
+                    loadFragment(fragment);
+                    return true;
 
-        navigationView.setNavigationItemSelectedListener(this);
-
-        //Internet connected?
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfos = connectivityManager.getActiveNetworkInfo();
-
-        boolean isConnected = networkInfos != null &&
-                              networkInfos.isConnected();
-
-        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        String id = sp.getString("id", "");
-        String firstName = sp.getString("first_name", "");
-        String lastName = sp.getString("last_name", "");
-        String email = sp.getString("email_text", "");
-        String photo_url = sp.getString("url_photo", "");
-
-        if(isConnected) {
-            mqtt.connected();
-
-            Log.e("Photo", photo_url);
-
-            //emailAcc.setText(email);
-
-            //acc_pic.setImageResource(R.drawable.com_facebook_button_icon);
-
-            //if(photo_url != null)
-                //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
-                //
-            getBoardList(id);
-
-//            if(!tokenList.isEmpty()) {
-//                setDashBoard(tokenList);
-//                Toast.makeText(this, "Token not empty", Toast.LENGTH_SHORT).show();
-//
-//                for(String token : tokenList) {
-//                    Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
-//                }
-//            }
-
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), id, Snackbar.LENGTH_INDEFINITE);
-            snackbar.show();
-
-            callBack();
-        } else {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
-            snackbar.show();
+            }
+            return false;
         }
+    };
 
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
-
-    private void getBoardList(String id) {
-        Log.e("ID", id);
-
-        Call<User> call = restAPI.getQsfService().getBoard(id);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-
-                int status = response.code();
-                if(status == 200) {
-                    User user = response.body();
-                    List<Board> boards = user.getBoard();
-
-                    String b = "";
-                    for (Board board : boards) {
-                        b += board.getToken();
-                        tokenList.add(board.getToken());
-                    }
-
-                    setDashBoard(tokenList);
-
-                    Toast.makeText(MainActivity.this, b, Toast.LENGTH_SHORT).show();
-                    Log.e("Set Dashboard", b);
-                } else if(status == 204) {
-                    tokenList.clear();
-
-                    setDashBoard(tokenList);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e("Set Dashboard", t.toString());
-            }
-        });
-    }
-
-    private void setDashBoard(List<String> tokenList) {
-        if(!tokenList.isEmpty()) {
-            Log.e("Board", "not empty");
-
-            dashboard.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        } else {
-            no_dashboard.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    private void callBack() {
-        mqtt.client.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) {
-                if(topic.equals(tokenList.get(index) + "/temperature"))
-                    temp.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(index) + "/brightness"))
-                    bright.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(index) + "/fanStatus"))
-                    fanSta.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(index) + "/lampStatus"))
-                    lampSta.setText(new String(message.getPayload()));
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-    }
-
-    private void signOut() {
-        google.mGoogleSignInClient().signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-
-                        editor = sp.edit();
-                        editor.clear();
-                        editor.commit();
-
-                        startActivity(new Intent(MainActivity.this, Authentication.class));
-                        finish();
-                    }
-                });
-    }
-
-//    private boolean addPermission(Activity activity, Context context, List<String> permissionsList, String permission) {
-//        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-//            permissionsList.add(permission);
-//            // Check for Rationale Option
-//            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission))
-//                return false;
-//        }
-//        return true;
-//    }
 }

@@ -267,12 +267,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
             editor = sp.edit();
-            editor.putBoolean("log_in", true);
-            editor.putString("id", personId);
-            editor.putString("first_name", personGivenName);
-            editor.putString("last_name", personFamilyName);
-            editor.putString("email_text", personEmail);
-            //editor.putString("url_photo", personPhoto);
+            editor.putBoolean("LOG_IN", true);
+            editor.putString("ID", personId);
+            editor.putString("FIRST_NAME", personGivenName);
+            editor.putString("LAST_NAME", personFamilyName);
+            editor.putString("EMAIL", personEmail);
+            editor.putString("URL_PHOTO", String.valueOf(personPhoto));
             editor.commit();
 
             Glide.with(this).load(personPhoto).into(acc_pic);

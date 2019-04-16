@@ -2,44 +2,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
         android:id="@+id/add_menu"
-        android:icon="@drawable/ic_add_black_24dp"
+        android:icon="@drawable/ic_add_circle_outline_black_24dp"
         android:title="Add board"
-        app:showAsAction="always" >
+        app:showAsAction="always" />
 
-        <menu>
-            <item
-                android:id="@+id/qr_code_submenu"
-                android:icon="@drawable/ic_qr_code"
-                android:title="QR Code" />
+    <!--<item-->
+        <!--android:id="@+id/qr_code_menu"-->
+        <!--android:icon="@drawable/ic_qr_code_outline_white_24dp"-->
+        <!--android:title="QR code"-->
+        <!--app:showAsAction="always" />-->
 
-            <item
-                android:id="@+id/search_submenu"
-                android:icon="@drawable/ic_search_black_24dp"
-                android:title="Search" />
-        </menu>
-    </item>
+    <!--<item-->
+        <!--android:id="@+id/setting_menu"-->
+        <!--android:icon="@drawable/ic_settings_black_24dp"-->
+        <!--android:title="Setting"-->
+        <!--app:showAsAction="ifRoom" >-->
 
-    <item
-        android:id="@+id/setting_menu"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Setting"
-        app:showAsAction="ifRoom" >
+        <!--<menu>-->
 
-        <menu>
+            <!--<item-->
+                <!--android:id="@+id/bluetooth_submenu"-->
+                <!--android:title="Bluetooth" />-->
 
-            <item
-                android:id="@+id/bluetooth_submenu"
-                android:title="Bluetooth" />
+            <!--<item-->
+                <!--android:id="@+id/wifi_submenu"-->
+                <!--android:title="WiFi" />-->
 
-            <item
-                android:id="@+id/wifi_submenu"
-                android:title="WiFi" />
+        <!--</menu>-->
 
-        </menu>
-
-    </item>
+    <!--</item>-->
 
 </menu>

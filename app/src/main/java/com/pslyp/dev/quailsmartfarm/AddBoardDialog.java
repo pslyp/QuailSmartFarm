@@ -2,6 +2,7 @@ package com.pslyp.dev.quailsmartfarm;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,11 @@ import android.widget.Toast;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddBoardDialog extends AppCompatDialogFragment {
+public class AddBoardDialog extends AppCompatDialogFragment implements DialogListener {
+
+    private final int SCAN_QR_CODE = 2000;
+
+    private DialogListener dialogListener;
 
     private Button buttonScanQrCode;
     private TextInputLayout inputLayoutBoardName;
@@ -38,14 +43,17 @@ public class AddBoardDialog extends AppCompatDialogFragment {
                         Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
                         intent.putExtra("Name", inputLayoutBoardName.getEditText().getText());
+
+                        String name = inputLayoutBoardName.getEditText().getText().toString();
+                        dialogListener.applyTexts("AFAFFA", "adaf");
                     }
                 });
 
         buttonScanQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ScanActivity.class);
-                startActivityForResult(intent, 0);
+                Intent scanQRCodeIntent = new Intent(getContext(), ScanActivity.class);
+                startActivityForResult(scanQRCodeIntent, SCAN_QR_CODE);
             }
         });
 
@@ -53,8 +61,26 @@ public class AddBoardDialog extends AppCompatDialogFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            dialogListener = (DialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString());
+        }
+    }
+
+    @Override
+    public void applyTexts(String token, String name) {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SCAN_QR_CODE) {
             if(resultCode == RESULT_OK) {
                 String barcode = data.getStringExtra("SCAN_RESULT");
                 Toast.makeText(getContext(), barcode, Toast.LENGTH_SHORT).show();

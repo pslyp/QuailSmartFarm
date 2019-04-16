@@ -3,11 +3,13 @@ package com.pslyp.dev.quailsmartfarm;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Board;
@@ -18,13 +20,15 @@ import retrofit2.Response;
 
 public class AddBoard extends AppCompatActivity implements View.OnClickListener {
 
-    Button addBtn;
+    Button addBtn, scanQrCodeBtn;
     TextInputLayout token, name;
 
     RestAPI restAPI;
 
     //MQTT
     MQTT mqtt;
+
+    private final int SCAN_QR_CODE = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.button_scan_qr_code:
+                startActivityForResult(new Intent(AddBoard.this, ScanActivity.class), SCAN_QR_CODE);
+                break;
             case R.id.button_add_board:
                 addBoard();
                 break;
@@ -56,10 +63,12 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         mqtt = new MQTT(this);
 
         addBtn = findViewById(R.id.button_add_board);
+        scanQrCodeBtn = findViewById(R.id.button_scan_qr_code);
         token = findViewById(R.id.text_input_board_token);
         name = findViewById(R.id.text_input_board_name);
 
-        findViewById(R.id.button_add_board).setOnClickListener(this);
+        addBtn.setOnClickListener(this);
+        scanQrCodeBtn.setOnClickListener(this);
 
         mqtt.connected();
     }
@@ -89,4 +98,17 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SCAN_QR_CODE) {
+            if(resultCode == RESULT_OK) {
+                String barcode = data.getStringExtra("SCAN_RESULT");
+                Toast.makeText(this, barcode, Toast.LENGTH_SHORT).show();
+
+                token.getEditText().setText(barcode);
+            }
+        }
+    }
 }

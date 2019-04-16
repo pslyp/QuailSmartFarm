@@ -38,4 +38,7 @@
     <string name="configure_result_failed_port">Create Esptouch task failed, the EspTouch port could be used by other thread</string>
     <string name="configure_result_success">EspTouch 完成</string>
     <string name="configure_result_success_item">BSSID = %1$s, InetAddress = %2$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

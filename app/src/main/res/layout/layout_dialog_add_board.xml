@@ -8,17 +8,17 @@
 
     <Button
         android:id="@+id/button_scan_qr_code"
-        android:layout_width="70sp"
-        android:layout_height="70sp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/qr_code"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24sp"
-        android:text="- or -"
+        android:background="@drawable/ic_qr_code_outline_white_24dp"/>
+
+    <TextView
+        android:id="@+id/text_view_token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="No token"
         android:textSize="20sp"/>
 
     <android.support.design.widget.TextInputLayout

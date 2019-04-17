@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_configs:
+                    fragment = new ConfigFragment();
+                    loadFragment(fragment);
                     return true;
                 case R.id.navigation_me:
                     fragment = new MeFragment();

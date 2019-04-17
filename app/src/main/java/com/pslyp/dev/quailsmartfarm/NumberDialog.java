@@ -10,14 +10,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
 
-public class TempDialog extends AppCompatDialogFragment {
+public class NumberDialog extends AppCompatDialogFragment {
 
     private NumberPicker numberPicker;
-    private TempDialogListener listener;
-    private int number;
+    private NumberDialogListener listener;
+    private String title;
+    private int id, min, max, value;
 
-    public void setNumber(int number) {
-        this.number = number;
+    public interface NumberDialogListener {
+        void getValue(int id, int valueNew);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMinValue(int minValue) {
+        this.min = minValue;
+    }
+
+    public void setMaxValue(int maxValue) {
+        this.max = maxValue;
+    }
+
+    public void setValue(int valueOld) {
+        this.value = valueOld;
     }
 
     @Override
@@ -25,21 +46,21 @@ public class TempDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.layout_dialog_temp, null);
+        View view = layoutInflater.inflate(R.layout.layout_dialog_number, null);
 
         numberPicker = view.findViewById(R.id.number_picker);
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(100);
-        numberPicker.setValue(number);
+        numberPicker.setMinValue(min);
+        numberPicker.setMaxValue(max);
+        numberPicker.setValue(value);
         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                number = picker.getValue();
+                value = picker.getValue();
             }
         });
 
         builder.setView(view)
-                .setTitle("Temperature")
+                .setTitle(title)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -49,7 +70,7 @@ public class TempDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.appTexts(number);
+                        listener.getValue(id, value);
                     }
                 });
 
@@ -61,13 +82,10 @@ public class TempDialog extends AppCompatDialogFragment {
         super.onAttach(context);
 
         try {
-            listener = (TempDialogListener) context;
+            listener = (NumberDialogListener) getTargetFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
     }
 
-    public interface TempDialogListener {
-        void appTexts(int number);
-    }
 }

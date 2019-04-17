@@ -43,6 +43,9 @@ public interface qsfService {
     );
 
     @PUT("user/{id}")
-    Call<Board> updateBoard(@Path("id") String id, @Body Board board);
+    Call<Board> updateUser(@Path("id") String id, @Body Board board);
+
+    @PUT("user/{id}/board/{token}")
+    Call<Board> updateBoard(@Path("id") String id, @Path("token") String token, @Body Board board);
 
 }

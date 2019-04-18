@@ -29,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     protected void onStart() {
@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstance() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -88,18 +88,20 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment;
             switch (menuItem.getItemId()) {
                 case R.id.navigation_home:
+                    setTitle("Home");
                     fragment = new HomeFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_configs:
+                    setTitle("Config");
                     fragment = new ConfigFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_me:
+                    setTitle("Me");
                     fragment = new MeFragment();
                     loadFragment(fragment);
                     return true;
-
             }
             return false;
         }

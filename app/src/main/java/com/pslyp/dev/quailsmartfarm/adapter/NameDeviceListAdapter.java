@@ -15,18 +15,18 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class DeviceListAdapter extends ArrayAdapter<Board> {
+public class NameDeviceListAdapter extends ArrayAdapter<String> {
 
     private Context mContext;
-    private ArrayList<Board> mDeviceArrayList;
+    private ArrayList<String> mNameDeviceArrayList;
     private int mLayoutResId;
 
-    public DeviceListAdapter(@NonNull Context context, int resource, ArrayList<Board> objects) {
+    public NameDeviceListAdapter(@NonNull Context context, int resource, ArrayList<String> objects) {
         super(context, resource, objects);
 
         this.mContext = context;
         this.mLayoutResId = resource;
-        this.mDeviceArrayList = objects;
+        this.mNameDeviceArrayList= objects;
     }
 
     @NonNull
@@ -35,14 +35,11 @@ public class DeviceListAdapter extends ArrayAdapter<Board> {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(mLayoutResId, null);
 
-        Board board = mDeviceArrayList.get(position);
+        String nameDevice = mNameDeviceArrayList.get(position);
 
-        if(board != null) {
+        if(nameDevice != null) {
             TextView deviceName = view.findViewById(R.id.text_view_name);
-
-            if(board.getName() != null) {
-                deviceName.setText(board.getName());
-            }
+            deviceName.setText(nameDevice);
         }
 
         return view;

@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Fragment home, config, me;
+
     private final String PREF_NAME = "LoginPreferences";
 
     @Override
@@ -43,11 +45,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         boolean isLogIn = sp.getBoolean("LOG_IN", false);
 
+        home = new HomeFragment();
+        config = new ConfigFragment();
+        me = new MeFragment();
+
         if(!isLogIn) {
             startActivity(new Intent(MainActivity.this, Authentication.class));
             finish();
         } else {
-            loadFragment(new HomeFragment());
+            loadFragment(home);
         }
     }
 
@@ -89,18 +95,18 @@ public class MainActivity extends AppCompatActivity {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_home:
                     setTitle("Home");
-                    fragment = new HomeFragment();
-                    loadFragment(fragment);
+//                    fragment = new HomeFragment();
+                    loadFragment(home);
                     return true;
                 case R.id.navigation_configs:
                     setTitle("Config");
-                    fragment = new ConfigFragment();
-                    loadFragment(fragment);
+//                    fragment = new ConfigFragment();
+                    loadFragment(config);
                     return true;
                 case R.id.navigation_me:
                     setTitle("Me");
-                    fragment = new MeFragment();
-                    loadFragment(fragment);
+//                    fragment = new MeFragment();
+                    loadFragment(me);
                     return true;
             }
             return false;

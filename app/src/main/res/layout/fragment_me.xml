@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -13,31 +14,44 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/image_view_account"
-            android:layout_width="50sp"
-            android:layout_height="50sp" />
+            android:layout_width="85sp"
+            android:layout_height="85sp"
+            android:layout_marginTop="32sp"
+            android:src="@drawable/app_icon"
+            app:civ_border_width="0sp"
+            app:civ_shadow="true"
+            app:civ_shadow_radius="1"
+            app:civ_shadow_color="#8a795d" />
 
         <TextView
             android:id="@+id/text_view_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
             android:text="Name" />
 
         <TextView
             android:id="@+id/text_view_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment" />
+            android:layout_marginTop="8sp"
+            android:text="Email" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/text_view_sign_out"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16sp"
         android:layout_below="@+id/linear_layout_1"
-        android:gravity="center_horizontal"
-        android:text="Sign out" />
+        android:background="@drawable/selector_bg_button_brown"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="Sign out"
+        android:textSize="14sp"
+        android:textColor="#000000"/>
 
 </RelativeLayout>

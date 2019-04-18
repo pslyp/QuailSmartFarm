@@ -50,8 +50,8 @@ dependencies {
     //Gson converter by retrofit
     implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
     //Custom Gauge
-    implementation 'de.hdodenhof:circleimageview:3.0.0'
-    //CircleImageView
+    implementation 'com.mikhaellopez:circularimageview:3.2.0'
+    //CircleImageView - lopspower
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     //Glide
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'

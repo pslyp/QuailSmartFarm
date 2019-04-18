@@ -25,10 +25,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanActivity"></activity>
-        <activity android:name=".Setting" />
-        <activity android:name=".DeviceList" />
-        <activity android:name=".Settings_backup" />
+        <activity android:name=".DeviceDashBoard"></activity>
+        <activity android:name=".ScanActivity" />
         <activity android:name=".Gauge" />
         <activity android:name=".SmartConfigWiFI" />
         <activity android:name=".CreateAccount">

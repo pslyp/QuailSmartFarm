@@ -58,6 +58,7 @@ public class HomeFragment extends Fragment {
 
     private RestAPI restAPI;
     private ArrayList<String> nameDeviceList;
+    private List<Board> deviceList;
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -118,7 +119,12 @@ public class HomeFragment extends Fragment {
     public AdapterView.OnItemClickListener mDeviceClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getActivity().getBaseContext(), DeviceDashBoard.class);
 
+            intent.putExtra("SENDER_KEY", "Home");
+            intent.putExtra("TOKEN", deviceList.get(position).getToken());
+
+            getActivity().startActivity(intent);
         }
     };
 
@@ -133,14 +139,16 @@ public class HomeFragment extends Fragment {
 
                 if(status == 200) {
                     User user = response.body();
-                    List<Board> boards = user.getBoard();
+//                    List<Board> boards = user.getBoard();
+                    deviceList = user.getBoard();
 
-                    for(Board board : boards) {
-                        nameDeviceList.add(board.getName());
-                    }
+//                    for(Board board : boards) {
+//                        nameDeviceList.add(board.getName());
+//                    }
                 }
 
-                NameDeviceListAdapter adapter = new NameDeviceListAdapter(getContext(), R.layout.device_item, nameDeviceList);
+//                NameDeviceListAdapter adapter = new NameDeviceListAdapter(getContext(), R.layout.device_item, nameDeviceList);
+                DeviceListAdapter adapter = new DeviceListAdapter(getContext(), R.layout.device_item, deviceList);
                 mDeviceListView.setAdapter(adapter);
 
                 progressBar.setVisibility(View.GONE);

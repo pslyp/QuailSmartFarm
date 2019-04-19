@@ -1,9 +1,12 @@
 package com.pslyp.dev.quailsmartfarm;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +55,7 @@ public class DeviceDashBoard extends AppCompatActivity {
     //MQTT
     MQTT mqtt;
     private int indexToken = 0;
+    private String token = "";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -80,6 +84,19 @@ public class DeviceDashBoard extends AppCompatActivity {
         setContentView(R.layout.activity_device_dash_board);
 
         initInstance();
+
+//        FragmentManager manager = getSupportFragmentManager();
+//        FragmentTransaction transaction = manager.beginTransaction();
+//
+//        HomeFragment homeFragment = new HomeFragment();
+//        transaction.add(R.id.frame1, homeFragment);
+//        transaction.commit();
+
+
+    }
+
+    public void getHomeFragment(String token) {
+        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
     }
 
     //    @Override
@@ -200,6 +217,13 @@ public class DeviceDashBoard extends AppCompatActivity {
 
             Log.e("Photo", photo_url);
 
+            final String sender = getIntent().getExtras().getString("SENDER_KEY");
+            if(sender != null) {
+                Intent intent = getIntent();
+                token = intent.getStringExtra("TOKEN");
+                Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+            }
+
             //emailAcc.setText(email);
 
             //acc_pic.setImageResource(R.drawable.com_facebook_button_icon);
@@ -207,7 +231,7 @@ public class DeviceDashBoard extends AppCompatActivity {
             //if(photo_url != null)
             //Glide.with(MainActivity.this).load("http://goo.gl/gEgYUd").into(acc_pic);
             //
-            getBoardList(id);
+//            getBoardList(id);
 
 //            if(!tokenList.isEmpty()) {
 //                setDashBoard(tokenList);
@@ -250,7 +274,7 @@ public class DeviceDashBoard extends AppCompatActivity {
 
                     setDashBoard(tokenList);
 
-                    Toast.makeText(DeviceDashBoard.this, b, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(DeviceDashBoard.this, b, Toast.LENGTH_SHORT).show();
                     Log.e("Set Dashboard", b);
                 } else if(status == 204) {
                     tokenList.clear();
@@ -287,13 +311,15 @@ public class DeviceDashBoard extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                if(topic.equals(tokenList.get(indexToken) + "/temperature"))
+//                if(topic.equals(tokenList.get(indexToken) + "/temperature"))
+//                    temp.setText(new String(message.getPayload()));
+                if(topic.equals(token + "/temperature"))
                     temp.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(indexToken) + "/brightness"))
+                if(topic.equals(token + "/brightness"))
                     bright.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(indexToken) + "/fanStatus"))
+                if(topic.equals(token + "/fanStatus"))
                     fanSta.setText(new String(message.getPayload()));
-                if(topic.equals(tokenList.get(indexToken) + "/lampStatus"))
+                if(topic.equals(token + "/lampStatus"))
                     lampSta.setText(new String(message.getPayload()));
             }
 

@@ -11,6 +11,7 @@ import com.pslyp.dev.quailsmartfarm.R;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +19,10 @@ import androidx.annotation.Nullable;
 public class DeviceListAdapter extends ArrayAdapter<Board> {
 
     private Context mContext;
-    private ArrayList<Board> mDeviceArrayList;
+    private List<Board> mDeviceArrayList;
     private int mLayoutResId;
 
-    public DeviceListAdapter(@NonNull Context context, int resource, ArrayList<Board> objects) {
+    public DeviceListAdapter(@NonNull Context context, int resource, List<Board> objects) {
         super(context, resource, objects);
 
         this.mContext = context;

@@ -1,6 +1,7 @@
 package com.pslyp.dev.quailsmartfarm;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,7 +36,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
     private RestAPI restAPI;
 
-    private Button buttonSave;
+    private Button buttonSave, buttonNet;
     private MaterialSpinner device;
     private LinearLayout linearStartTime, linearEndTime;
     private TextView textViewBright, textViewTemp, textViewStartHour, textViewStartMinute, textViewEndHour, textViewEndMinute;
@@ -72,6 +73,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         linearStartTime = view.findViewById(R.id.linear_start_time);
         linearEndTime = view.findViewById(R.id.linear_end_time);
         buttonSave = view.findViewById(R.id.button_save);
+        buttonNet = view.findViewById(R.id.button_internet);
 
         sp = getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         final String id = sp.getString("ID", "");
@@ -164,6 +166,13 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
             @Override
             public void onClick(View view) {
                 saveConfig();
+            }
+        });
+
+        buttonNet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), SmartConfigWiFI.class));
             }
         });
 

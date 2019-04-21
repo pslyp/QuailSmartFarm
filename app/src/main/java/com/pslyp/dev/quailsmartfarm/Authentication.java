@@ -22,9 +22,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Status;
 import com.pslyp.dev.quailsmartfarm.models.User;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -257,11 +261,12 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     private void updateUI(GoogleSignInAccount account) {
         if(account != null) {
+            String personId = account.getId();
             String personName = account.getDisplayName();
             String personGivenName = account.getGivenName();
             String personFamilyName = account.getFamilyName();
             String personEmail = account.getEmail();
-            String personId = account.getId();
+            String personToken = FirebaseInstanceId.getInstance().getToken();
             Uri personPhoto = account.getPhotoUrl();
 
             sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -272,21 +277,24 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
             editor.putString("FIRST_NAME", personGivenName);
             editor.putString("LAST_NAME", personFamilyName);
             editor.putString("EMAIL", personEmail);
+            editor.putString("PERSON_TOKEN", personToken);
             editor.putString("URL_PHOTO", String.valueOf(personPhoto));
             editor.commit();
 
-            Glide.with(this).load(personPhoto).into(acc_pic);
+//            Glide.with(this).load(personPhoto).into(acc_pic);
 
             data = (personId + "-" + personGivenName + "-" + personFamilyName + "-" + personEmail);
 
             //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail));
+            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail, personToken));
             //mqtt.publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
             //builder.setMessage(result);
             //builder.show();
+
+            Toast.makeText(this, personToken, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(Authentication.this, MainActivity.class);
             startActivity(intent);

@@ -12,12 +12,14 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.UnsupportedEncodingException;
+
 public class MQTT {
 
     private MainActivity main;
     private Context context;
 
-    String clientId;
+    private String clientId;
     MqttAndroidClient client;
     IMqttToken token;
 
@@ -29,7 +31,7 @@ public class MQTT {
         this.context = context;
     }
 
-    public void connected() {
+    public void connect() {
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(context.getApplicationContext(), MQTTHOST, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
@@ -104,9 +106,19 @@ public class MQTT {
         });
     }
 
-    public void publish(String topic, String message) {
+    public void publish(String topic, String text) {
+        byte[] encodePayload = new byte[0];
         try {
-            client.publish(topic, message.getBytes(), 0, false);
+//            String topic2 = "/cloudMessage";
+//            String message2 = "cwui9n92gqM:APA91bE5fYxbMAV_ZFAwmRdg7hoXvGcPobCXF_Pli93n80bEoNuEwIgO2csSqbXTVJvuJuVhpCQ7iiADUWQnLTU3y7mj0pWrzlQwXXqT6Oh_Oi98-6Dni0NcTP40gt_jlXXYbLWSoAih";
+//
+//            MqttMessage message = new MqttMessage();
+//            message.setPayload(text.getBytes());
+
+//            encodePayload = text.getBytes("UTF-8");
+//            MqttMessage message = new MqttMessage(encodePayload);
+
+            client.publish(topic, text.getBytes(), 0 ,false);
         } catch (MqttException e) {
             e.printStackTrace();
         }

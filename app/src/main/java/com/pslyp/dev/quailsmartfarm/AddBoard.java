@@ -70,13 +70,13 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         addBtn.setOnClickListener(this);
         scanQrCodeBtn.setOnClickListener(this);
 
-        mqtt.connected();
+//        mqtt.connected();
     }
 
     private void addBoard() {
         SharedPreferences sp = getSharedPreferences("LoginPreferences", MODE_PRIVATE);
 
-        String id = sp.getString("id", "");
+        String id = sp.getString("ID", "");
         String t = token.getEditText().getText().toString();
         String n = name.getEditText().getText().toString();
 

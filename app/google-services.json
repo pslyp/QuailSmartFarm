@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "665214411917",
+    "firebase_url": "https://quailsmartfarm.firebaseio.com",
+    "project_id": "quailsmartfarm",
+    "storage_bucket": "quailsmartfarm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665214411917:android:0c33a98d0c013231",
+        "android_client_info": {
+          "package_name": "com.pslyp.dev.quailsmartfarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "665214411917-71pc3il2nt6vpq4qfmdj0b1conged89t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIeM_3RgNHxV0mNxTTh2PQ6579Cg14Fdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "665214411917-71pc3il2nt6vpq4qfmdj0b1conged89t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

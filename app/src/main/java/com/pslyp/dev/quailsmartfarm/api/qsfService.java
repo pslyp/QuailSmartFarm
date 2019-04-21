@@ -24,7 +24,7 @@ public interface qsfService {
     @GET("user")
     Call<User> checkUser(@Query("id") String id);
 
-    @GET("user/{id}/board")
+    @POST("user/{id}/board")
     Call<User> getBoard(@Path("id") String id);
 
     @POST("user/login")

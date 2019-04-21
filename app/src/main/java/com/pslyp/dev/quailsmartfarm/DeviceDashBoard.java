@@ -29,8 +29,14 @@ import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
@@ -43,7 +49,7 @@ import retrofit2.Response;
 public class DeviceDashBoard extends AppCompatActivity {
 
     //Permission request code
-    private final int CAMERA_PERMISSION   = 1001;
+    private final int CAMERA_PERMISSION = 1001;
     private final int LOCATION_PERMISSION = 1002;
 
     private final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 2000;
@@ -53,9 +59,9 @@ public class DeviceDashBoard extends AppCompatActivity {
     private ArrayList<String> tokenList;
 
     //MQTT
-    MQTT mqtt;
+    private MQTT mqtt;
     private int indexToken = 0;
-    private String token = "";
+    private String tokenString = "";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -77,6 +83,8 @@ public class DeviceDashBoard extends AppCompatActivity {
 
     //private String id;
     private final String TAG = "MainActivity";
+
+    private Button b1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +194,7 @@ public class DeviceDashBoard extends AppCompatActivity {
         bright = findViewById(R.id.text_view_bright);
         fanSta = findViewById(R.id.text_view_fan_status);
         lampSta = findViewById(R.id.text_view_lamp_status);
+        b1 = findViewById(R.id.button1);
 //        drawerLayout = findViewById(R.id.drawer_layout);
 //        navigationView = view.findViewById(R.id.nav_view);
 
@@ -210,20 +219,31 @@ public class DeviceDashBoard extends AppCompatActivity {
         String firstName = sp.getString("FIRST_NAME", "");
         String lastName = sp.getString("LAST_NAME", "");
         String email = sp.getString("EMAIL", "");
+        String personToken = sp.getString("PERSON_TOKEN", "");
         String photo_url = sp.getString("URL_PHOTO", "");
 
-        if(isConnected) {
-            mqtt.connected();
+        if (isConnected) {
+            mqtt.connect();
 
             Log.e("Photo", photo_url);
 
             final String sender = getIntent().getExtras().getString("SENDER_KEY");
-            if(sender != null) {
+            if (sender != null) {
                 Intent intent = getIntent();
-                token = intent.getStringExtra("TOKEN");
-                Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
+                tokenString = intent.getStringExtra("TOKEN");
+                Toast.makeText(this, tokenString, Toast.LENGTH_SHORT).show();
             }
 
+            b1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mqtt.publish(tokenString + "/cloudMessage", "dasd");
+                }
+            });
+
+//            String personToken = "cwui9n92gqM:APA91bE5fYxbMAV_ZFAwmRdg7hoXvGcPobCXF_Pli93n80bEoNuEwIgO2csSqbXTVJvuJuVhpCQ7iiADUWQnLTU3y7mj0pWrzlQwXXqT6Oh_Oi98-6Dni0NcTP40gt_jlXXYbLWSoAih";
+//            publish("/cloudMessage", "dasd");
+//
             //emailAcc.setText(email);
 
             //acc_pic.setImageResource(R.drawable.com_facebook_button_icon);
@@ -262,7 +282,7 @@ public class DeviceDashBoard extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
 
                 int status = response.code();
-                if(status == 200) {
+                if (status == 200) {
                     User user = response.body();
                     List<Board> boards = user.getBoard();
 
@@ -276,7 +296,7 @@ public class DeviceDashBoard extends AppCompatActivity {
 
 //                    Toast.makeText(DeviceDashBoard.this, b, Toast.LENGTH_SHORT).show();
                     Log.e("Set Dashboard", b);
-                } else if(status == 204) {
+                } else if (status == 204) {
                     tokenList.clear();
 
                     setDashBoard(tokenList);
@@ -291,7 +311,7 @@ public class DeviceDashBoard extends AppCompatActivity {
     }
 
     private void setDashBoard(List<String> tokenList) {
-        if(!tokenList.isEmpty()) {
+        if (!tokenList.isEmpty()) {
             Log.e("Board", "not empty");
 
             dashboard.setVisibility(View.VISIBLE);
@@ -311,16 +331,32 @@ public class DeviceDashBoard extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-//                if(topic.equals(tokenList.get(indexToken) + "/temperature"))
-//                    temp.setText(new String(message.getPayload()));
-                if(topic.equals(token + "/temperature"))
+                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature"))
                     temp.setText(new String(message.getPayload()));
-                if(topic.equals(token + "/brightness"))
+                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness"))
                     bright.setText(new String(message.getPayload()));
-                if(topic.equals(token + "/fanStatus"))
+                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus"))
                     fanSta.setText(new String(message.getPayload()));
-                if(topic.equals(token + "/lampStatus"))
+                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus"))
                     lampSta.setText(new String(message.getPayload()));
+
+                /*
+                switch (topic) {
+                    case "temperature":
+                        temp.setText(new String(message.getPayload()));
+                        break;
+                    case "brightness":
+                        bright.setText(new String(message.getPayload()));
+                        break;
+                    case "fanStatus":
+                        fanSta.setText(new String(message.getPayload()));
+                        break;
+                    case "lampStatus":
+                        lampSta.setText(new String(message.getPayload()));
+                        break;
+                    default: break;
+                }
+                */
             }
 
             @Override

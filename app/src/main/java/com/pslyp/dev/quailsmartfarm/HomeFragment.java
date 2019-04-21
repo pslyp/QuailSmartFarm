@@ -34,8 +34,14 @@ import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
@@ -47,6 +53,7 @@ import retrofit2.Response;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -55,6 +62,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
 
     private DeviceData deviceData;
+
+    private MQTT mqtt;
 
     private RestAPI restAPI;
     private ArrayList<String> nameDeviceList;
@@ -92,6 +101,9 @@ public class HomeFragment extends Fragment {
 
 
     public void initInstance(View view) {
+        mqtt = new MQTT(getContext());
+        mqtt.connect();
+
         restAPI = new RestAPI();
 
         nameDeviceList = new ArrayList<>();
@@ -124,11 +136,24 @@ public class HomeFragment extends Fragment {
             intent.putExtra("SENDER_KEY", "Home");
             intent.putExtra("TOKEN", deviceList.get(position).getToken());
 
+            String topic = (deviceList.get(position).getToken() + "/cloudMessage");
+            String personToken = sp.getString("PERSON_TOKEN", "");
+            Toast.makeText(getContext(), personToken, Toast.LENGTH_SHORT).show();
+
+            if (!sp.getBoolean("MSG_FIRST", false)) {
+                mqtt.publish(topic, personToken.substring(0, 70) + ">1");
+                mqtt.publish(topic, personToken.substring(70, 140) + ">2");
+                mqtt.publish(topic, personToken.substring(140) + ">3");
+                mqtt.publish(deviceList.get(position).getToken() + "/save", "msg");
+
+                editor = sp.edit();
+                editor.putBoolean("MSG_FIRST", true);
+                editor.commit();
+            }
+
             getActivity().startActivity(intent);
         }
     };
-
-
 
     private void setDeviceList(String id) {
         Call<User> boardCall = restAPI.getQsfService().getBoard(id);
@@ -145,11 +170,11 @@ public class HomeFragment extends Fragment {
 //                    for(Board board : boards) {
 //                        nameDeviceList.add(board.getName());
 //                    }
-                }
 
-//                NameDeviceListAdapter adapter = new NameDeviceListAdapter(getContext(), R.layout.device_item, nameDeviceList);
-                DeviceListAdapter adapter = new DeviceListAdapter(getContext(), R.layout.device_item, deviceList);
-                mDeviceListView.setAdapter(adapter);
+//                    NameDeviceListAdapter adapter = new NameDeviceListAdapter(getContext(), R.layout.device_item, nameDeviceList);
+                    DeviceListAdapter adapter = new DeviceListAdapter(getContext(), R.layout.device_item, deviceList);
+                    mDeviceListView.setAdapter(adapter);
+                }
 
                 progressBar.setVisibility(View.GONE);
                 linearLayout1.setVisibility(View.VISIBLE);

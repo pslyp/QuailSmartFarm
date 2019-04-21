@@ -9,6 +9,7 @@ public class User {
     private String lastname;
     private String email;
     private String password;
+    private String msgToken;
     private List<Board> board;
 
     public User(String id, String email, String password) {
@@ -17,11 +18,12 @@ public class User {
         this.password = password;
     }
 
-    public User(String id, String firstname, String lastname, String email) {
+    public User(String id, String firstname, String lastname, String email, String msgToken) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
+        this.msgToken = msgToken;
     }
 
     public String getId() {
@@ -46,6 +48,10 @@ public class User {
 
     public List<Board> getBoard() {
         return board;
+    }
+
+    public String getMsgToken() {
+        return msgToken;
     }
 
 }

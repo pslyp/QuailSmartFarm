@@ -191,10 +191,18 @@ public class DeviceDashBoard extends AppCompatActivity {
         dashboard = findViewById(R.id.linear_layout_dashboard);
         no_dashboard = findViewById(R.id.relative_layout_no_dashboard);
         temp = findViewById(R.id.text_view_temp);
+        temp.setText("---");
         bright = findViewById(R.id.text_view_bright);
+        bright.setText("---");
         fanSta = findViewById(R.id.text_view_fan_status);
+        fanSta.setBackgroundResource(R.drawable.shape_status_default);
+        fanSta.setText("--");
         lampSta = findViewById(R.id.text_view_lamp_status);
+        lampSta.setBackgroundResource(R.drawable.shape_status_default);
+        lampSta.setText("--");
         b1 = findViewById(R.id.button1);
+
+
 //        drawerLayout = findViewById(R.id.drawer_layout);
 //        navigationView = view.findViewById(R.id.nav_view);
 
@@ -269,6 +277,7 @@ public class DeviceDashBoard extends AppCompatActivity {
         } else {
 //            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
 //            snackbar.show();
+            lampSta.setBackgroundResource(R.drawable.shape_status_default);
         }
 
     }
@@ -331,14 +340,26 @@ public class DeviceDashBoard extends AppCompatActivity {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature"))
+                if (topic.equals(tokenString + "/temperature"))
                     temp.setText(new String(message.getPayload()));
-                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness"))
+                if (topic.equals(tokenString + "/brightness"))
                     bright.setText(new String(message.getPayload()));
-                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus"))
+                if (topic.equals(tokenString + "/fanStatus")) {
+                    if (new String(message.getPayload()).equals("ON")) {
+                        fanSta.setBackgroundResource(R.drawable.shape_status_green);
+                    } else {
+                        fanSta.setBackgroundResource(R.drawable.shape_status_red);
+                    }
                     fanSta.setText(new String(message.getPayload()));
-                if (topic.equals("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus"))
+                }
+                if (topic.equals(tokenString + "/lampStatus")) {
+                    if (new String(message.getPayload()).equals("ON")) {
+                        lampSta.setBackgroundResource(R.drawable.shape_status_green);
+                    } else {
+                        lampSta.setBackgroundResource(R.drawable.shape_status_red);
+                    }
                     lampSta.setText(new String(message.getPayload()));
+                }
 
                 /*
                 switch (topic) {

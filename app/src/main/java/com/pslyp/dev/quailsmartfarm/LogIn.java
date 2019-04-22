@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.encrypt.MD5;
 import com.pslyp.dev.quailsmartfarm.models.User;
@@ -105,15 +106,17 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                     String first_name = user.getFirstname();
                     String last_name = user.getLastname();
                     String email = user.getEmail();
+                    String personToken = FirebaseInstanceId.getInstance().getToken();
 
                     sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
                     editor = sp.edit();
-                    editor.putBoolean("log_in", true);
-                    editor.putString("id", id);
-                    editor.putString("first_name", first_name);
-                    editor.putString("last_name", last_name);
-                    editor.putString("email", email);
+                    editor.putBoolean("LOG_IN", true);
+                    editor.putString("ID", id);
+                    editor.putString("FIRST_NAME", first_name);
+                    editor.putString("LAST_NAME", last_name);
+                    editor.putString("EMAIL", email);
+                    editor.putString("PERSON_TOKEN", personToken);
                     editor.commit();
 
                     startActivity(new Intent(LogIn.this, MainActivity.class));

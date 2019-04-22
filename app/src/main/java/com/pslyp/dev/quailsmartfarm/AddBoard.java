@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
+import com.pslyp.dev.quailsmartfarm.encrypt.MD5;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 
 import retrofit2.Call;
@@ -23,6 +24,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     Button addBtn, scanQrCodeBtn;
     TextInputLayout token, name;
 
+    MD5 md5;
     RestAPI restAPI;
 
     //MQTT
@@ -59,6 +61,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void initInstance() {
+        md5 = new MD5();
         restAPI = new RestAPI();
         mqtt = new MQTT(this);
 
@@ -70,13 +73,14 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         addBtn.setOnClickListener(this);
         scanQrCodeBtn.setOnClickListener(this);
 
-//        mqtt.connected();
+        mqtt.connect();
     }
 
     private void addBoard() {
         SharedPreferences sp = getSharedPreferences("LoginPreferences", MODE_PRIVATE);
 
         String id = sp.getString("ID", "");
+//        final String t = md5.create(token.getEditText().getText().toString());
         String t = token.getEditText().getText().toString();
         String n = name.getEditText().getText().toString();
 
@@ -87,6 +91,11 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         call.enqueue(new Callback<Board>() {
             @Override
             public void onResponse(Call<Board> call, Response<Board> response) {
+//                mqtt.subscribe(t + "/brightness", 1);
+//                mqtt.subscribe(t + "/temperature", 1);
+//                mqtt.subscribe(t + "/fanStatus", 1);
+//                mqtt.subscribe(t + "/lampStatus", 1);
+
                 startActivity(new Intent(AddBoard.this, MainActivity.class));
                 finish();
             }

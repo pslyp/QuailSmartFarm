@@ -5,160 +5,184 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".ConfigFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/spinner_device"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ms_hint="Choose device" />
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#E0B28D"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
 
-        <TextView
+        <com.jaredrummler.materialspinner.MaterialSpinner
+            android:id="@+id/spinner_device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Brightness"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/text_view_bright"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="120"
-            android:textSize="24sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Temperature"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/text_view_temp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="55"
-            android:textSize="24sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Start Time"
-            android:textSize="24sp" />
+            app:ms_hint="Choose device" />
 
         <LinearLayout
-            android:id="@+id/linear_start_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/text_view_start_hour"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="20"
+                android:layout_weight="1"
+                android:text="Brightness"
                 android:textSize="24sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/text_view_bright"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=":"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/text_view_start_minute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="30"
+                android:layout_weight="1"
+                android:text="120"
                 android:textSize="24sp" />
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="End Time"
-            android:textSize="24sp" />
-
         <LinearLayout
-            android:id="@+id/linear_end_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/text_view_end_hour"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="23"
+                android:layout_weight="1"
+                android:text="Temperature"
                 android:textSize="24sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/text_view_temp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=":"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/text_view_end_minute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="30"
+                android:layout_weight="1"
+                android:text="55"
                 android:textSize="24sp" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Start Time"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:id="@+id/linear_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_view_start_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_view_start_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="End Time"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:id="@+id/linear_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_view_end_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="23"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_view_end_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16sp"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/button_internet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="Internet"/>
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16sp"
-        android:text="Save" />
-
-    <Button
-        android:id="@+id/button_internet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Internet"/>
 
 </LinearLayout>

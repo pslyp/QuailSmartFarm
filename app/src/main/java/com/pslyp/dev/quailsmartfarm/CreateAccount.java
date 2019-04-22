@@ -95,14 +95,13 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
 
                     startActivity(new Intent(CreateAccount.this, Authentication.class));
                     finish();
-                } else if(status == 204) {
-
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(CreateAccount.this, "Fail", Toast.LENGTH_SHORT).show();
+                Log.e("dasd", t.toString());
             }
         });
     }

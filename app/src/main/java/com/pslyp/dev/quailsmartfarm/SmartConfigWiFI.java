@@ -104,6 +104,7 @@ public class SmartConfigWiFI extends AppCompatActivity implements OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_config_wifi);
+        setTitle("Set Wifi");
 
         mApSsidTV = findViewById(R.id.ap_ssid_text);
         mApBssidTV = findViewById(R.id.ap_bssid_text);

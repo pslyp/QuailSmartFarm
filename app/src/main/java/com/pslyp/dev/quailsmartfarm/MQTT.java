@@ -124,7 +124,7 @@ public class MQTT {
         }
     }
 
-    private void subscribe(String topic, int qos) {
+    public void subscribe(String topic, int qos) {
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {

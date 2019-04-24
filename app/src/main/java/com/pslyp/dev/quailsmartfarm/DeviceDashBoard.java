@@ -67,11 +67,11 @@ public class DeviceDashBoard extends AppCompatActivity {
     NavigationView navigationView;
 
     Button two, bluetooth;
-    ImageView acc_pic, imageView;
+    ImageView acc_pic, imageView, lampStatus, fanStatus;
     LinearLayout linearLayout1, dashboard;
     ProgressBar progressBar;
     RelativeLayout no_dashboard;
-    TextView temp, bright, fanSta, lampSta, emailAcc;
+    TextView temp, bright, emailAcc;
 
     //Shared Preferences
     SharedPreferences sp;
@@ -191,15 +191,13 @@ public class DeviceDashBoard extends AppCompatActivity {
         dashboard = findViewById(R.id.linear_layout_dashboard);
         no_dashboard = findViewById(R.id.relative_layout_no_dashboard);
         temp = findViewById(R.id.text_view_temp);
-        temp.setText("---");
+//        temp.setText("---");
         bright = findViewById(R.id.text_view_bright);
-        bright.setText("---");
-        fanSta = findViewById(R.id.text_view_fan_status);
-        fanSta.setBackgroundResource(R.drawable.shape_status_default);
-        fanSta.setText("--");
-        lampSta = findViewById(R.id.text_view_lamp_status);
-        lampSta.setBackgroundResource(R.drawable.shape_status_default);
-        lampSta.setText("--");
+//        bright.setText("---");
+        fanStatus = findViewById(R.id.image_view_fan_status);
+//        fanStatus.setBackgroundResource(R.drawable.shape_status_default);
+        lampStatus = findViewById(R.id.image_view_lamp_status);
+        lampStatus.setBackgroundResource(R.drawable.shape_status_default);
         b1 = findViewById(R.id.button1);
 
 
@@ -277,7 +275,7 @@ public class DeviceDashBoard extends AppCompatActivity {
         } else {
 //            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
 //            snackbar.show();
-            lampSta.setBackgroundResource(R.drawable.shape_status_default);
+            lampStatus.setBackgroundResource(R.drawable.shape_status_default);
         }
 
     }
@@ -346,19 +344,17 @@ public class DeviceDashBoard extends AppCompatActivity {
                     bright.setText(new String(message.getPayload()));
                 if (topic.equals(tokenString + "/fanStatus")) {
                     if (new String(message.getPayload()).equals("ON")) {
-                        fanSta.setBackgroundResource(R.drawable.shape_status_green);
+                        fanStatus.setBackgroundResource(R.drawable.shape_status_green);
                     } else {
-                        fanSta.setBackgroundResource(R.drawable.shape_status_red);
+                        fanStatus.setBackgroundResource(R.drawable.shape_status_red);
                     }
-                    fanSta.setText(new String(message.getPayload()));
                 }
                 if (topic.equals(tokenString + "/lampStatus")) {
                     if (new String(message.getPayload()).equals("ON")) {
-                        lampSta.setBackgroundResource(R.drawable.shape_status_green);
+                        lampStatus.setBackgroundResource(R.drawable.shape_status_green);
                     } else {
-                        lampSta.setBackgroundResource(R.drawable.shape_status_red);
+                        lampStatus.setBackgroundResource(R.drawable.shape_status_red);
                     }
-                    lampSta.setText(new String(message.getPayload()));
                 }
 
                 /*

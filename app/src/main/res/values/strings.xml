@@ -12,7 +12,7 @@
     <string name="text_brightness">Brightness</string>
     <string name="text_temperature">Temperature</string>
     <string name="text_fan">Fan</string>
-    <string name="text_lamp">Light</string>
+    <string name="text_lamp">Lamp</string>
 
     //Bluetooth BLE
     <string name="connected">Connected</string>

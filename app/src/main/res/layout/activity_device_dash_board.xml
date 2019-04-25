@@ -102,14 +102,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
                         android:text="@string/text_brightness"
-                        android:textSize="30sp"
+                        android:textSize="33sp"
                         android:textColor="#4D4D4D"
                         android:fontFamily="@font/fc_lamoon_regular"/>
 
@@ -119,42 +119,51 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/fc_lamoon_regular"
                         android:text="120 %"
-                        android:textSize="30sp" />
+                        android:textSize="33sp"
+                        android:textColor="#4D4D4D" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="15dp"
-                    android:layout_height="wrap_content">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_temperature"
-                        android:textSize="25sp"
-                        android:textColor="#4D4D4D"/>
-
-                    <TextView
-                        android:id="@+id/text_view_temp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_gravity="center_horizontal"
-                        android:textSize="30sp"
-                        android:text="27'C"/>
+                    android:layout_height="match_parent">
 
                 </LinearLayout>
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="60dp"
+                android:src="@drawable/temperature"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_temperature"
+                android:textSize="33sp"
+                android:textColor="#4D4D4D"
+                android:fontFamily="@font/fc_lamoon_regular"/>
+
+            <TextView
+                android:id="@+id/text_view_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:textSize="33sp"
+                android:text="27'C"
+                android:textColor="#4D4D4D"
+                android:fontFamily="@font/fc_lamoon_regular"/>
 
         </LinearLayout>
 

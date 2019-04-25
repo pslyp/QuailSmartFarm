@@ -197,7 +197,7 @@ public class DeviceDashBoard extends AppCompatActivity {
         fanStatus = findViewById(R.id.image_view_fan_status);
 //        fanStatus.setBackgroundResource(R.drawable.shape_status_default);
         lampStatus = findViewById(R.id.image_view_lamp_status);
-        lampStatus.setBackgroundResource(R.drawable.shape_status_default);
+//        lampStatus.setBackgroundResource(R.drawable.shape_status_default);
         b1 = findViewById(R.id.button1);
 
 

@@ -2,20 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_card_view"
-            android:title="CardView" />
-        <item android:id="@+id/nav_gauge"
-            android:title="Gauge" />
+        <item android:id="@+id/nav_dash_board"
+            android:title="Dashboard" />
+        <item android:id="@+id/nav_configs"
+            android:title="Configs" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/group1">
         <item android:id="@+id/nav_sign_out"
             android:title="Sign Out" />
     </group>
-
-    <item android:title="Board">
-        <menu>
-            <item
-                android:id="@+id/ssaf"
-                android:title="Hello"/>
-        </menu>
-    </item>
 
 </menu>

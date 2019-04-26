@@ -37,11 +37,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dashBoard = new DashBoardFragment();
-        config = new ConfigFragment();
-
-        loadFragment(dashBoard);
-
         initInstance();
 
 //        BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -101,16 +96,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_dash_board);
+        dashBoard = new DashBoardFragment();
+        config = new ConfigFragment();
+
+        setTitle("Dashboard");
+        loadFragment(dashBoard);
     }
 
     @Override
@@ -125,10 +128,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
+        if(id == R.id.nav_dash_board) {
+            dashBoard = new DashBoardFragment();
+            setTitle("Dashboard");
+            loadFragment(dashBoard);
+        }
         if(id == R.id.nav_configs) {
             config = new ConfigFragment();
+            setTitle("Configs");
             loadFragment(config);
-        } else if(id == R.id.nav_sign_out) {
+        }
+        if(id == R.id.nav_sign_out) {
             item.setChecked(false);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -146,8 +156,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
             builder.show();
-        } else {
-            loadFragment(dashBoard);
         }
 
 //        loadFragment(fragment);

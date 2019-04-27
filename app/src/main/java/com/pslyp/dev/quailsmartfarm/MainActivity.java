@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,12 +17,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private TextView mTitle;
     private Fragment dashBoard, config, me;
 
     //Google
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -112,7 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dashBoard = new DashBoardFragment();
         config = new ConfigFragment();
 
-        setTitle("Dashboard");
+        mTitle.setText("Dashboard");
+        setTitle("");
         loadFragment(dashBoard);
     }
 
@@ -129,13 +134,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if(id == R.id.nav_dash_board) {
-            dashBoard = new DashBoardFragment();
-            setTitle("Dashboard");
+            mTitle.setText("Dashboard");
+//            setTitle("Dashboard");
             loadFragment(dashBoard);
         }
         if(id == R.id.nav_configs) {
-            config = new ConfigFragment();
-            setTitle("Configs");
+            mTitle.setText("Configs");
+//            setTitle("Configs");
             loadFragment(config);
         }
         if(id == R.id.nav_sign_out) {

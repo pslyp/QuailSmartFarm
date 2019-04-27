@@ -72,12 +72,13 @@
                                 android:layout_height="55dp"
                                 android:src="@drawable/light" />
 
-                            <ImageView
-                                android:id="@+id/image_view_lamp_status"
+                            <LinearLayout
+                                android:id="@+id/linear_layout_lamp_status"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_marginTop="10dp"
-                                android:background="@drawable/shape_status_red" />
+                                android:orientation="horizontal"
+                                android:background="@drawable/shape_status_default" />
 
                         </LinearLayout>
 
@@ -125,7 +126,7 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_marginTop="10dp"
-                                android:background="@drawable/shape_status_green"
+                                android:background="@drawable/shape_status_default"
                                 android:gravity="center"
                                 android:orientation="horizontal">
 
@@ -177,7 +178,7 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_marginTop="10dp"
-                                android:background="@drawable/shape_status_green"
+                                android:background="@drawable/shape_status_default"
                                 android:gravity="center"
                                 android:orientation="horizontal">
 
@@ -222,12 +223,13 @@
                                 android:layout_height="55dp"
                                 android:src="@drawable/water" />
 
-                            <ImageView
-                                android:id="@+id/image_view_water_status"
+                            <LinearLayout
+                                android:id="@+id/linear_layout_water_status"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_marginTop="10dp"
-                                android:background="@drawable/shape_status_red" />
+                                android:orientation="horizontal"
+                                android:background="@drawable/shape_status_default" />
 
                         </LinearLayout>
 
@@ -310,9 +312,17 @@
                             android:id="@+id/text_view_temp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/fc_lamoon_regular"
+                            android:text="--"
+                            android:textColor="#4D4D4D"
+                            android:textSize="45sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:fontFamily="@font/fc_lamoon_regular"
-                            android:text="27'C"
+                            android:text="\u00BA C"
                             android:textColor="#4D4D4D"
                             android:textSize="45sp" />
 

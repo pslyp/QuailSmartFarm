@@ -63,17 +63,14 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_config, container, false);
 
-        setHasOptionsMenu(true);
-
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+//        setHasOptionsMenu(true);
 
         restAPI = new RestAPI();
         boardTokens = new ArrayList<>();
         boardNames = new ArrayList<>();
         boardList = new ArrayList<>();
 
-        device = view.findViewById(R.id.spinner_device);
+//        device = view.findViewById(R.id.spinner_device);
         textViewBright = view.findViewById(R.id.text_view_bright);
         textViewTemp = view.findViewById(R.id.text_view_temp);
         textViewStartHour = view.findViewById(R.id.text_view_start_hour);
@@ -86,27 +83,30 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         buttonNet = view.findViewById(R.id.button_internet);
 
         sp = getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        final String id = sp.getString("ID", "");
 
-        setBoardArrayList(id);
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, boardNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        setConfig();
 
-        device.setAdapter(adapter);
-        device.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                if(position != -1) {
-                    Toast.makeText(getContext(), position + item.toString() + "Token: " + boardTokens.get(position), Toast.LENGTH_SHORT).show();
-                    textViewBright.setText(String.valueOf(boardList.get(position).getBrightness()));
-                    textViewTemp.setText(String.valueOf(boardList.get(position).getTemperature()));
-                    textViewStartHour.setText(String.valueOf(boardList.get(position).getStart().substring(0, 2)));
-                    textViewStartMinute.setText(String.valueOf(boardList.get(position).getStart().substring(2)));
-                    textViewEndHour.setText(String.valueOf(boardList.get(position).getEnd().substring(0, 2)));
-                    textViewEndMinute.setText(String.valueOf(boardList.get(position).getEnd().substring(2)));
-                }
-            }
-        });
+//        final String id = sp.getString("ID", "");
+
+//        setBoardArrayList(id);
+//        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, boardNames);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+//        device.setAdapter(adapter);
+//        device.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+//                if(position != -1) {
+//                    Toast.makeText(getContext(), position + item.toString() + "Token: " + boardTokens.get(position), Toast.LENGTH_SHORT).show();
+//                    textViewBright.setText(String.valueOf(boardList.get(position).getBrightness()));
+//                    textViewTemp.setText(String.valueOf(boardList.get(position).getTemperature()));
+//                    textViewStartHour.setText(String.valueOf(boardList.get(position).getStart().substring(0, 2)));
+//                    textViewStartMinute.setText(String.valueOf(boardList.get(position).getStart().substring(2)));
+//                    textViewEndHour.setText(String.valueOf(boardList.get(position).getEnd().substring(0, 2)));
+//                    textViewEndMinute.setText(String.valueOf(boardList.get(position).getEnd().substring(2)));
+//                }
+//            }
+//        });
 
         textViewBright.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,33 +231,102 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         }
     }
 
-    private void setBoardArrayList(String id) {
-        Call<User> boardCall = restAPI.getQsfService().getBoard(id);
-        boardCall.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                int status = response.code();
-                if(status == 200) {
-                    User user = response.body();
+//    private void setBoardArrayList(String id) {
+//        Call<User> boardCall = restAPI.getQsfService().getBoard(id);
+//        boardCall.enqueue(new Callback<User>() {
+//            @Override
+//            public void onResponse(Call<User> call, Response<User> response) {
+//                int status = response.code();
+//                if(status == 200) {
+//                    User user = response.body();
+//
+//                    for(Board board : user.getBoard()) {
+//                        boardTokens.add(board.getToken());
+//                        boardNames.add(board.getName());
+//                        boardList.add(new Board(board.getToken(), board.getName(), board.getBrightness(), board.getTemperature(), board.getStart(), board.getEnd()));
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<User> call, Throwable t) {
+//
+//            }
+//        });
+//    }
 
-                    for(Board board : user.getBoard()) {
-                        boardTokens.add(board.getToken());
-                        boardNames.add(board.getName());
-                        boardList.add(new Board(board.getToken(), board.getName(), board.getBrightness(), board.getTemperature(), board.getStart(), board.getEnd()));
-                    }
+    private void setConfig() {
+        String id = sp.getString("ID", "");
+        String token = sp.getString("BOARD_TOKEN", "");
+
+        Toast.makeText(getContext(), id + " " + token, Toast.LENGTH_SHORT).show();
+
+        Call<Board> call = restAPI.getQsfService().getBoardByToken(id, token);
+        call.enqueue(new Callback<Board>() {
+            @Override
+            public void onResponse(Call<Board> call, Response<Board> response) {
+                int status = response.code();
+
+                if(status == 200) {
+                    Board board = response.body();
+
+                    int bright = board.getBrightness();
+                    int temp = board.getTemperature();
+                    Toast.makeText(getContext(), String.valueOf(temp), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), String.valueOf(bright), Toast.LENGTH_SHORT).show();
+
+//                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
+
+//                    textViewBright.setText(board.getBrightness());
+//                    textViewTemp.setText(board.getTemperature());
+//                    textViewStartHour.setText(board.getStart().substring(0, 2));
+//                    textViewStartMinute.setText(board.getStart().substring(3, board.getStart().length()));
+//                    textViewEndHour.setText(board.getEnd().substring(0, 3));
+//                    textViewEndHour.setText(board.getEnd().substring(3, board.getEnd().length()));
+                } else if(status == 204) {
+                    Toast.makeText(getContext(), "No content", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Board> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void saveConfig() {
+        int brightness = Integer.valueOf(textViewBright.getText().toString());
+        int temperature = Integer.valueOf(textViewTemp.getText().toString());
+        String start = textViewStartHour.getText().toString() + textViewStartMinute.getText().toString();
+        String end = textViewEndHour.getText().toString() + textViewEndMinute.getText().toString();
+
+        Board board = new Board(brightness, temperature, start, end);
+
+        String id = sp.getString("ID", "");
+        String token = sp.getString("BOARD_TOKEN", "");
+
+        Call<Board> call = restAPI.getQsfService().updateBoard(id, token, board);
+        call.enqueue(new Callback<Board>() {
+            @Override
+            public void onResponse(Call<Board> call, Response<Board> response) {
+                int status = response.code();
+
+                if(status == 204) {
+                    Toast.makeText(getContext(), "Configs Success", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Configs Fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Board> call, Throwable t) {
 
             }
         });
     }
-
-    private void saveConfig() {
-
-    }
-
 
 }

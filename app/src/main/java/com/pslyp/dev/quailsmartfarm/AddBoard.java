@@ -24,6 +24,10 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     Button addBtn, scanQrCodeBtn;
     TextInputLayout token, name;
 
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
+    private String PREF_NAME = "LoginPreferences";
+
     MD5 md5;
     RestAPI restAPI;
 
@@ -63,7 +67,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     private void initInstance() {
         md5 = new MD5();
         restAPI = new RestAPI();
-        mqtt = new MQTT(this);
+//        mqtt = new MQTT(this);
 
         addBtn = findViewById(R.id.button_add_board);
         scanQrCodeBtn = findViewById(R.id.button_scan_qr_code);
@@ -73,16 +77,20 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         addBtn.setOnClickListener(this);
         scanQrCodeBtn.setOnClickListener(this);
 
-        mqtt.connect();
+//        mqtt.connect();
     }
 
     private void addBoard() {
-        SharedPreferences sp = getSharedPreferences("LoginPreferences", MODE_PRIVATE);
+        sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
         String id = sp.getString("ID", "");
-//        final String t = md5.create(token.getEditText().getText().toString());
-        String t = token.getEditText().getText().toString();
+        String t = md5.create(token.getEditText().getText().toString());
+//        String t = token.getEditText().getText().toString();
         String n = name.getEditText().getText().toString();
+
+        editor = sp.edit();
+        editor.putString("BOARD_TOKEN", t);
+        editor.commit();
 
 //        mqtt.publish("user/data/token/insert", (id + "-" + t + "-" + n));
         Log.e("Add", id);
@@ -91,11 +99,6 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         call.enqueue(new Callback<Board>() {
             @Override
             public void onResponse(Call<Board> call, Response<Board> response) {
-//                mqtt.subscribe(t + "/brightness", 1);
-//                mqtt.subscribe(t + "/temperature", 1);
-//                mqtt.subscribe(t + "/fanStatus", 1);
-//                mqtt.subscribe(t + "/lampStatus", 1);
-
                 startActivity(new Intent(AddBoard.this, MainActivity.class));
                 finish();
             }

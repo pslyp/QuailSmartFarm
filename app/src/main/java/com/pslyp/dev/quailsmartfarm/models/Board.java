@@ -14,6 +14,13 @@ public class Board {
         this.name = name;
     }
 
+    public Board(int brightness, int temperature, String start, String end) {
+        this.brightness = brightness;
+        this.temperature = temperature;
+        this.start = start;
+        this.end = end;
+    }
+
     public Board(String token, String name, int brightness, int temperature, String start, String end) {
         this.token = token;
         this.name = name;

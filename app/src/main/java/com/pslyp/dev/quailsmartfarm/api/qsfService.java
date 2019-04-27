@@ -27,6 +27,9 @@ public interface qsfService {
     @POST("user/{id}/board")
     Call<User> getBoard(@Path("id") String id);
 
+    @POST("user/{id}/board/{token}")
+    Call<Board> getBoardByToken(@Path("id") String id, @Path("token") String token);
+
     @POST("user/login")
     Call<User> logIn(@Query("email") String email, @Query("pass") String pass);
 

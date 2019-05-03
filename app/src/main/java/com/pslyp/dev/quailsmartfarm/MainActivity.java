@@ -69,6 +69,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        finish();
+//    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

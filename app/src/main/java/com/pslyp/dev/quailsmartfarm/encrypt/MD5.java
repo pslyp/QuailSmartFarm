@@ -19,7 +19,7 @@ public class MD5 {
             for (int i=0; i<messageDigest.length; i++)
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
 
-            return hexString.toString();
+            return hexString.toString().toUpperCase();
         }catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

@@ -24,11 +24,14 @@ public interface qsfService {
     @GET("user")
     Call<User> checkUser(@Query("id") String id);
 
+    @POST("user")
+    Call<User> checkBoard(@Query("id") String id, @Query("token") String token);
+
     @POST("user/{id}/board")
     Call<User> getBoard(@Path("id") String id);
 
     @POST("user/{id}/board/{token}")
-    Call<Board> getBoardByToken(@Path("id") String id, @Path("token") String token);
+    Call<User> getBoardByToken(@Path("id") String id, @Path("token") String token);
 
     @POST("user/login")
     Call<User> logIn(@Query("email") String email, @Query("pass") String pass);
@@ -46,9 +49,9 @@ public interface qsfService {
     );
 
     @PUT("user/{id}")
-    Call<Board> updateUser(@Path("id") String id, @Body Board board);
+    Call<Board> insertBoard(@Path("id") String id, @Body Board board);
 
     @PUT("user/{id}/board/{token}")
-    Call<Board> updateBoard(@Path("id") String id, @Path("token") String token, @Body Board board);
+    Call<Board> editBoard(@Path("id") String id, @Path("token") String token, @Body Board board);
 
 }

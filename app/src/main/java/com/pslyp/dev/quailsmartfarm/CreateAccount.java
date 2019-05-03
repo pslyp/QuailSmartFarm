@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
@@ -25,13 +27,14 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
     RestAPI restAPI;
 
     Button signUp;
+    TextView mTitle;
     TextInputLayout email_text, pass_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        setTitle("Create New Account");
+//        setTitle("Create New Account");
 
         initInstance();
     }
@@ -70,11 +73,20 @@ public class CreateAccount extends AppCompatActivity implements View.OnClickList
         md5 = new MD5();
         restAPI = new RestAPI();
 
+        mTitle = findViewById(R.id.toolbar_title);
         signUp = findViewById(R.id.button_sign_up);
         email_text = findViewById(R.id.text_input_email);
         pass_text = findViewById(R.id.text_input_password);
 
         findViewById(R.id.button_sign_up).setOnClickListener(this);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
+        setSupportActionBar(toolbar);
+
+        mTitle.setText("Create New Account");
+        setTitle("");
     }
 
     private void createAccount() {

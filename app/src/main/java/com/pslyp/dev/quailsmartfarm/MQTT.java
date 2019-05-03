@@ -27,8 +27,14 @@ public class MQTT {
     String USERNAME = "pslyp";
     String PASSWORD = "1475369";
 
+    private boolean connected = false;
+
     public MQTT(Context context) {
         this.context = context;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public void connect() {
@@ -44,15 +50,22 @@ public class MQTT {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     //Toast.makeText(MQTT.this, "Connected MQTT", Toast.LENGTH_SHORT).show();
-                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness", 1);
-                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature", 1);
-                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus", 1);
-                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus", 1);
+//                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/brightness", 1);
+//                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/temperature", 1);
+//                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/fanStatus", 1);
+//                    subscribe("gh51f5hr55gdfcue684fs61s6v3d54v8/lampStatus", 1);
+
+//                    subscribe("4C31A6DBCD72FF1171332936EFDBF273/brightness", 1);
+//                    subscribe("4C31A6DBCD72FF1171332936EFDBF273/temperature", 1);
+//                    subscribe("4C31A6DBCD72FF1171332936EFDBF273/fanStatus", 1);
+//                    subscribe("4C31A6DBCD72FF1171332936EFDBF273/lampStatus", 1);
+
+                    connected = true;
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    connected = false;
                 }
             });
         } catch (MqttException e) {

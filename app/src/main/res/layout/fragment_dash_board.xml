@@ -279,9 +279,17 @@
                             android:id="@+id/text_view_bright"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/fc_lamoon_regular"
+                            android:text="--"
+                            android:textColor="#4D4D4D"
+                            android:textSize="45sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:fontFamily="@font/fc_lamoon_regular"
-                            android:text="120%"
+                            android:text="V"
                             android:textColor="#4D4D4D"
                             android:textSize="45sp" />
 
@@ -322,7 +330,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="8dp"
                             android:fontFamily="@font/fc_lamoon_regular"
-                            android:text="\u00BA C"
+                            android:text="'C"
                             android:textColor="#4D4D4D"
                             android:textSize="45sp" />
 

@@ -2,34 +2,40 @@ package com.pslyp.dev.quailsmartfarm.models;
 
 public class Data {
 
-    private String _id;
-    private String name;
-    private String brightnessSen;
-    private String temperatureSen;
-    private String fanCon;
-    private String lampCon;
+    private String date;
+    private String fanSta;
+    private String lampSta;
+    private String feedSta;
+    private String waterSta;
+    private int brightness;
+    private int temperature;
 
-    public String get_id() {
-        return _id;
+    public String getDate() {
+        return date;
     }
 
-    public String getName() {
-        return name;
+    public String getFanSta() {
+        return fanSta;
     }
 
-    public String getBrightnessSen() {
-        return brightnessSen;
+    public String getLampSta() {
+        return lampSta;
     }
 
-    public String getTemperatureSen() {
-        return temperatureSen;
+    public String getFeedSta() {
+        return feedSta;
     }
 
-    public String getFanCon() {
-        return fanCon;
+    public String getWaterSta() {
+        return waterSta;
     }
 
-    public String getLampCon() {
-        return lampCon;
+    public int getBrightness() {
+        return brightness;
     }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
 }

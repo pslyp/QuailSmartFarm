@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Brightness"
-                android:textSize="33sp"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
 
             <TextView
@@ -39,16 +39,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="120"
-                android:textSize="33sp"
+                android:text="--"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
+
+            <TextView
+                android:layout_width="22sp"
+                android:layout_height="wrap_content"
+                android:text="V"
+                android:textSize="35sp"
+                android:fontFamily="@font/fc_lamoon_regular" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <TextView
@@ -56,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Temperature"
-                android:textSize="33sp"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
 
             <TextView
@@ -64,24 +71,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="55"
-                android:textSize="33sp"
+                android:text="--"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
+
+            <TextView
+                android:layout_width="22sp"
+                android:layout_height="wrap_content"
+                android:text="'C"
+                android:textSize="35sp"
+                android:fontFamily="@font/fc_lamoon_regular" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Start Time"
-                android:textSize="33sp"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
 
             <LinearLayout
@@ -94,41 +109,46 @@
                     android:id="@+id/text_view_start_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="20"
-                    android:textSize="33sp"
+                    android:text="--"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=":"
-                    android:textSize="33sp"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
                 <TextView
                     android:id="@+id/text_view_start_minute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="30"
-                    android:textSize="33sp"
+                    android:text="--"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="20sp"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="End Time"
-                android:textSize="33sp"
+                android:textSize="35sp"
                 android:fontFamily="@font/fc_lamoon_regular"/>
 
             <LinearLayout
@@ -141,38 +161,73 @@
                     android:id="@+id/text_view_end_hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="23"
-                    android:textSize="33sp"
+                    android:text="--"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=":"
-                    android:textSize="33sp"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
                 <TextView
                     android:id="@+id/text_view_end_minute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="30"
-                    android:textSize="33sp"
+                    android:text="--"
+                    android:textSize="35sp"
                     android:fontFamily="@font/fc_lamoon_regular"/>
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="20sp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:text="Time Plus"
+                android:textSize="35sp"
+                android:fontFamily="@font/fc_lamoon_regular" />
+
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/text_view_temp" />
+
+            <TextView
+                android:id="@+id/text_view_hr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="hr"
+                android:textSize="35sp"
+                android:fontFamily="@font/fc_lamoon_regular"/>
 
         </LinearLayout>
 
         <Button
             android:id="@+id/button_save"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16sp"
+            android:layout_marginTop="24sp"
             android:text="Save"
-            android:textSize="30sp"
-            android:fontFamily="@font/fc_lamoon_regular"/>
+            android:textSize="35sp"
+            android:fontFamily="@font/fc_lamoon_regular"
+            android:background="#F5D2A7" />
 
         <Button
             android:id="@+id/button_internet"

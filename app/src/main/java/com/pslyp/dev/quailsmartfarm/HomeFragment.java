@@ -34,7 +34,7 @@ import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
+//import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
 
     private DeviceData deviceData;
 
-    private MQTT mqtt;
+//    private MQTT mqtt;
 
     private RestAPI restAPI;
     private ArrayList<String> nameDeviceList;
@@ -101,8 +101,8 @@ public class HomeFragment extends Fragment {
 
 
     public void initInstance(View view) {
-        mqtt = new MQTT(getContext());
-        mqtt.connect();
+//        mqtt = new MQTT(getContext());
+//        mqtt.connect();
 
         restAPI = new RestAPI();
 
@@ -131,27 +131,27 @@ public class HomeFragment extends Fragment {
     public AdapterView.OnItemClickListener mDeviceClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(getActivity().getBaseContext(), DeviceDashBoard.class);
+//            Intent intent = new Intent(getActivity().getBaseContext(), DeviceDashBoard.class);
 
-            intent.putExtra("SENDER_KEY", "Home");
-            intent.putExtra("TOKEN", deviceList.get(position).getToken());
+//            intent.putExtra("SENDER_KEY", "Home");
+//            intent.putExtra("TOKEN", deviceList.get(position).getToken());
 
             String topic = (deviceList.get(position).getToken() + "/cloudMessage");
             String personToken = sp.getString("PERSON_TOKEN", "");
             Toast.makeText(getContext(), personToken, Toast.LENGTH_SHORT).show();
 
             if (!sp.getBoolean("MSG_FIRST", false)) {
-                mqtt.publish(topic, personToken.substring(0, 70) + ">1");
-                mqtt.publish(topic, personToken.substring(70, 140) + ">2");
-                mqtt.publish(topic, personToken.substring(140) + ">3");
-                mqtt.publish(deviceList.get(position).getToken() + "/save", "msg");
+//                mqtt.publish(topic, personToken.substring(0, 70) + ">1");
+//                mqtt.publish(topic, personToken.substring(70, 140) + ">2");
+//                mqtt.publish(topic, personToken.substring(140) + ">3");
+//                mqtt.publish(deviceList.get(position).getToken() + "/save", "msg");
 
                 editor = sp.edit();
                 editor.putBoolean("MSG_FIRST", true);
                 editor.commit();
             }
 
-            getActivity().startActivity(intent);
+//            getActivity().startActivity(intent);
         }
     };
 

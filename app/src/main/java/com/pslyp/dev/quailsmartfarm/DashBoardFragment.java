@@ -7,21 +7,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+//import io.netpie.microgear.Microgear;
+//import io.netpie.microgear.MicrogearEventListener;
 
 
 /**
@@ -30,8 +36,17 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class DashBoardFragment extends Fragment {
 
     private LinearLayout lampStatus, fanStatus, feedStatus, waterStatus;
+    private TextView mBright, mTemp;
 
-    private MQTT mqtt;
+    private String clientId;
+    MqttAndroidClient client;
+    IMqttToken token;
+
+    String MQTTHOST = "tcp://35.240.137.230:1883";
+    String USERNAME = "pslyp";
+    String PASSWORD = "1475369";
+
+    String board_token = "";
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -40,7 +55,6 @@ public class DashBoardFragment extends Fragment {
     public DashBoardFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,26 +70,29 @@ public class DashBoardFragment extends Fragment {
     }
 
     private void initInsance(View view) {
-        mqtt = new MQTT(getContext());
-
         lampStatus = view.findViewById(R.id.linear_layout_lamp_status);
         fanStatus = view.findViewById(R.id.linear_layout_fan_status);
         feedStatus = view.findViewById(R.id.linear_layout_feed_status);
         waterStatus = view.findViewById(R.id.linear_layout_water_status);
+        mBright = view.findViewById(R.id.text_view_bright);
+        mTemp = view.findViewById(R.id.text_view_temp);
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        boolean isConnectec = networkInfo != null &&
+        boolean isConnected = networkInfo != null &&
                 networkInfo.isConnected();
 
         sp = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String board_token = sp.getString("BOARD_TOKEN", "");
+        String tokenString = "4C31A6DBCD72FF1171332936EFDBF273";
+        if(isConnected) {
 
-        if(isConnectec) {
-            mqtt.connect();
-
-            String token = sp.getString("BOARD_TOKEN", "");
-            callBack(token);
+//            String board_token = "4C31A6DBCD72FF1171332936EFDBF273";
+//            StringBuffer board_token = new StringBuffer(sp.getString("BOARD_TOKEN", ""));
+//            Toast.makeText(getContext(), board_token, Toast.LENGTH_SHORT).show();
+                connect(board_token);
+                callBack(board_token);
         }
     }
 
@@ -85,8 +102,89 @@ public class DashBoardFragment extends Fragment {
         inflater.inflate(R.menu.main, menu);
     }
 
-    private void callBack(final String token) {
-        mqtt.client.setCallback(new MqttCallback() {
+    public void connect(final String board_token) {
+        final String id = sp.getString("ID", "");
+        final String personToken = sp.getString("PERSON_TOKEN", "");
+
+        clientId = MqttClient.generateClientId();
+        client = new MqttAndroidClient(getContext().getApplicationContext(), MQTTHOST, clientId);
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setUserName(USERNAME);
+        options.setPassword(PASSWORD.toCharArray());
+
+        try {
+            token = client.connect(options);
+            token.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Toast.makeText(getContext(), "Connect Success", Toast.LENGTH_SHORT).show();
+
+                    subscribe("/" + board_token + "/brightness", 1);
+                    subscribe("/" + board_token + "/temperature", 1);
+                    subscribe("/" + board_token + "/fanStatus", 1);
+                    subscribe("/" + board_token + "/lampStatus", 1);
+                    subscribe("/" + board_token + "/feedStatus", 1);
+                    subscribe("/" + board_token + "/waterStatus", 1);
+
+//                    if(personToken.length() > 0) {
+//                        publish("/" + board_token + "/cloudMessage", personToken.substring(0, 70) + ">1");
+//                        publish("/" + board_token + "/cloudMessage", personToken.substring(70, 140) + ">2");
+//                        publish("/" + board_token + "/cloudMessage", personToken.substring(140) + ">3");
+//                    }
+                    publish("/" + board_token + "/cloudMessage", id);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        callBack(this.board_token);
+    }
+
+    public void publish(String topic, String text) {
+//        byte[] encodePayload = new byte[0];
+        try {
+//            String topic2 = "/cloudMessage";
+//            String message2 = "cwui9n92gqM:APA91bE5fYxbMAV_ZFAwmRdg7hoXvGcPobCXF_Pli93n80bEoNuEwIgO2csSqbXTVJvuJuVhpCQ7iiADUWQnLTU3y7mj0pWrzlQwXXqT6Oh_Oi98-6Dni0NcTP40gt_jlXXYbLWSoAih";
+//
+//            MqttMessage message = new MqttMessage();
+//            message.setPayload(text.getBytes());
+
+//            encodePayload = text.getBytes("UTF-8");
+//            MqttMessage message = new MqttMessage(encodePayload);
+
+            client.publish(topic, text.getBytes(), 0 ,false);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void subscribe(String topic, int qos) {
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    //Toast.makeText(MainActivity.this, "Subscribe: Success", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    //Toast.makeText(MainActivity.this, "Subscribe: Fail", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch(MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callBack(final String board_token) {
+        client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
 
@@ -94,39 +192,39 @@ public class DashBoardFragment extends Fragment {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                if(topic.equals(token + "/lampStatus")) {
+                if(topic.equals("/" + board_token + "/lampStatus")) {
                     if(new String(message.getPayload()).equals("ON")) {
                         lampStatus.setBackgroundResource(R.drawable.shape_status_red);
                     } else {
                         lampStatus.setBackgroundResource(R.drawable.shape_status_default);
                     }
                 }
-                if(topic.equals(token + "/fanStatus")) {
+                if(topic.equals("/" + board_token + "/fanStatus")) {
                     if(new String(message.getPayload()).equals("ON")) {
                         fanStatus.setBackgroundResource(R.drawable.shape_status_red);
                     } else {
                         fanStatus.setBackgroundResource(R.drawable.shape_status_default);
                     }
                 }
-                if(topic.equals(token + "/feedStatus")) {
+                if(topic.equals("/" + board_token + "/feedStatus")) {
                     if(new String(message.getPayload()).equals("ON")) {
                         feedStatus.setBackgroundResource(R.drawable.shape_status_red);
                     } else {
                         feedStatus.setBackgroundResource(R.drawable.shape_status_default);
                     }
                 }
-                if(topic.equals(token + "/waterStatus")) {
+                if(topic.equals("/" + board_token + "/waterStatus")) {
                     if(new String(message.getPayload()).equals("ON")) {
                         waterStatus.setBackgroundResource(R.drawable.shape_status_red);
                     } else {
                         waterStatus.setBackgroundResource(R.drawable.shape_status_default);
                     }
                 }
-                if(topic.equals(token + "/brightness")) {
-
+                if(topic.equals("/" + board_token + "/brightness")) {
+                    mBright.setText(new String(message.getPayload()));
                 }
-                if(topic.equals(token + "/temperature")) {
-
+                if(topic.equals("/" + board_token + "/temperature")) {
+                    mTemp.setText(new String(message.getPayload()));
                 }
             }
 

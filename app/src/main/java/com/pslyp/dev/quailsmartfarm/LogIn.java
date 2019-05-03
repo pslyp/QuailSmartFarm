@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
@@ -25,6 +27,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
     RestAPI restAPI;
 
     Button login;
+    TextView mTitle;
     TextInputLayout email_text, pass_text;
 
     //Shared Preferences
@@ -78,11 +81,19 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
         md5 = new MD5();
         restAPI = new RestAPI();
 
+        mTitle = findViewById(R.id.toolbar_title);
         login = findViewById(R.id.button_log_in);
         email_text = findViewById(R.id.text_input_email);
         pass_text = findViewById(R.id.text_input_password);
 
         findViewById(R.id.button_log_in).setOnClickListener(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTitle = toolbar.findViewById(R.id.toolbar_title);
+        setSupportActionBar(toolbar);
+
+        mTitle.setText("Log In");
+        setTitle("");
     }
 
     private void logIn() {

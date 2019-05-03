@@ -23,6 +23,50 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:background="#FFFFFF">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:lines="1"
+                android:minLines="1"
+                android:maxLines="1"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:background="#FFFFFF">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:lines="1"
+                android:minLines="1"
+                android:maxLines="1"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:text="Sing In"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -33,7 +77,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Log In"
-                android:textSize="20sp" />
+                android:textSize="30sp"
+                android:fontFamily="@font/fc_lamoon_regular"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,7 +91,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create New Account"
-                android:textSize="20sp" />
+                android:textSize="30sp"
+                android:fontFamily="@font/fc_lamoon_regular"/>
 
         </LinearLayout>
 
@@ -62,8 +108,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="-- or --"
-            android:textSize="18dp"
+            android:text="or"
+            android:textSize="28dp"
+            android:fontFamily="@font/fc_lamoon_regular"
             android:gravity="center"/>
 
         <com.google.android.gms.common.SignInButton

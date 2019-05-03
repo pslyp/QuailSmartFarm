@@ -8,10 +8,17 @@ public class Board {
     private int temperature;
     private String start;
     private String end;
+    private String timeUp;
 
     public Board(String token, String name) {
         this.token = token;
         this.name = name;
+    }
+
+    public Board(int brightness, int temperature, String timeUp) {
+        this.brightness = brightness;
+        this.temperature = temperature;
+        this.timeUp = timeUp;
     }
 
     public Board(int brightness, int temperature, String start, String end) {
@@ -26,6 +33,16 @@ public class Board {
         this.name = name;
         this.brightness = brightness;
         this.temperature = temperature;
+        this.start = start;
+        this.end = end;
+    }
+
+    public Board(String token, String name, int brightness, int temperature, String timeUp, String start, String end) {
+        this.token = token;
+        this.name = name;
+        this.brightness = brightness;
+        this.temperature = temperature;
+        this.timeUp = timeUp;
         this.start = start;
         this.end = end;
     }
@@ -52,6 +69,10 @@ public class Board {
 
     public String getEnd() {
         return end;
+    }
+
+    public String getTimeUp() {
+        return timeUp;
     }
 
 }

@@ -1,8 +1,10 @@
 package com.pslyp.dev.quailsmartfarm;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +15,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,9 +29,7 @@ import com.pslyp.dev.quailsmartfarm.models.Board;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,11 +41,13 @@ import retrofit2.Response;
  */
 public class ConfigFragment extends Fragment implements NumberDialog.NumberDialogListener, TimeDialog.TimeDialogListener {
 
+    private MQTT mqtt;
     private RestAPI restAPI;
 
     private Button buttonSave, buttonNet;
     private MaterialSpinner device;
     private LinearLayout linearStartTime, linearEndTime;
+    private Spinner spinner;
     private TextView textViewBright, textViewTemp, textViewStartHour, textViewStartMinute, textViewEndHour, textViewEndMinute;
 
     private SharedPreferences sp;
@@ -53,10 +57,13 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
     private List<String> boardNames;
     private List<Board> boardList;
 
+    private String timeUp;
+
     public ConfigFragment() {
         // Required empty public constructor
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,12 +72,19 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
 //        setHasOptionsMenu(true);
 
+        mqtt = new MQTT(getContext());
         restAPI = new RestAPI();
         boardTokens = new ArrayList<>();
         boardNames = new ArrayList<>();
         boardList = new ArrayList<>();
 
 //        device = view.findViewById(R.id.spinner_device);
+        spinner = view.findViewById(R.id.spinner1);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.time, R.layout.spinner_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setAdapter(adapter);
+        spinner.setDropDownWidth(180);
+
         textViewBright = view.findViewById(R.id.text_view_bright);
         textViewTemp = view.findViewById(R.id.text_view_temp);
         textViewStartHour = view.findViewById(R.id.text_view_start_hour);
@@ -81,6 +95,8 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         linearEndTime = view.findViewById(R.id.linear_end_time);
         buttonSave = view.findViewById(R.id.button_save);
         buttonNet = view.findViewById(R.id.button_internet);
+
+        mqtt.connect();
 
         sp = getContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
@@ -117,7 +133,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
                 numberDialog.setId(R.id.text_view_bright);
                 numberDialog.setTitle("Brightness");
                 numberDialog.setMinValue(0);
-                numberDialog.setMaxValue(1000);
+                numberDialog.setMaxValue(4095);
                 numberDialog.setValue(brightOld);
                 numberDialog.show(getFragmentManager(), "bright dialog");
                 numberDialog.setTargetFragment(ConfigFragment.this, 1);
@@ -164,11 +180,26 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
                 TimeDialog timeDialog = new TimeDialog();
                 timeDialog.setId(R.id.linear_end_time);
-                timeDialog.setTitle("Start time");
+                timeDialog.setTitle("End time");
                 timeDialog.setHour(hour);
                 timeDialog.setMinute(minute);
                 timeDialog.show(getFragmentManager(), "timePicker");
                 timeDialog.setTargetFragment(ConfigFragment.this, 1);
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String text = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+
+                timeUp = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -224,6 +255,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
             case R.id.linear_start_time:
                 textViewStartHour.setText((hour/10 == 0)? ("0" + String.valueOf(hour)) : String.valueOf(hour));
                 textViewStartMinute.setText((minute/10 == 0)? ("0" + String.valueOf(minute)) : String.valueOf(minute));
+                break;
             case R.id.linear_end_time:
                 textViewEndHour.setText((hour/10 == 0)? ("0" + String.valueOf(hour)) : String.valueOf(hour));
                 textViewEndMinute.setText((minute/10 == 0)? ("0" + String.valueOf(minute)) : String.valueOf(minute));
@@ -261,28 +293,45 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
         Toast.makeText(getContext(), id + " " + token, Toast.LENGTH_SHORT).show();
 
-        Call<Board> call = restAPI.getQsfService().getBoardByToken(id, token);
-        call.enqueue(new Callback<Board>() {
+        Call<User> call = restAPI.getQsfService().getBoardByToken(id, token);
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Board> call, Response<Board> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 int status = response.code();
 
                 if(status == 200) {
-                    Board board = response.body();
+                    User user = response.body();
+                    List<Board> boards = user.getBoard();
 
-                    int bright = board.getBrightness();
-                    int temp = board.getTemperature();
-                    Toast.makeText(getContext(), String.valueOf(temp), Toast.LENGTH_SHORT).show();
+//                    System.out.println(boards.get(0).getBrightness());
+//
+//                    for(Board board : boards) {
+//                        System.out.println(board.getBrightness());
+//                        System.out.println(board.getTemperature());
+//                        System.out.println(board.getStart());
+//                        System.out.println(board.getEnd());
+//                    }
+//                    Board board = boards.get(0);
+//                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
+
+                    int bright = boards.get(0).getBrightness();
+                    int temp = boards.get(0).getTemperature();
+                    String timeUp = boards.get(0).getTimeUp();
+                    String start = boards.get(0).getStart();
+                    String end = boards.get(0).getEnd();
+
+//                    Toast.makeText(getContext(), String.valueOf(temp), Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(getContext(), String.valueOf(bright), Toast.LENGTH_SHORT).show();
 
 //                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
 
-//                    textViewBright.setText(board.getBrightness());
-//                    textViewTemp.setText(board.getTemperature());
-//                    textViewStartHour.setText(board.getStart().substring(0, 2));
-//                    textViewStartMinute.setText(board.getStart().substring(3, board.getStart().length()));
-//                    textViewEndHour.setText(board.getEnd().substring(0, 3));
-//                    textViewEndHour.setText(board.getEnd().substring(3, board.getEnd().length()));
+                    textViewBright.setText(String.valueOf(bright));
+                    textViewTemp.setText(String.valueOf(temp));
+                    spinner.setSelection(getIndex(spinner, timeUp));
+//                    textViewStartHour.setText(start.substring(0, 2));
+//                    textViewStartMinute.setText(start.substring(2));
+//                    textViewEndHour.setText(end.substring(0, 2));
+//                    textViewEndMinute.setText(end.substring(2));
                 } else if(status == 204) {
                     Toast.makeText(getContext(), "No content", Toast.LENGTH_SHORT).show();
                 } else {
@@ -291,7 +340,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
             }
 
             @Override
-            public void onFailure(Call<Board> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
 
             }
         });
@@ -304,12 +353,13 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         String start = textViewStartHour.getText().toString() + textViewStartMinute.getText().toString();
         String end = textViewEndHour.getText().toString() + textViewEndMinute.getText().toString();
 
-        Board board = new Board(brightness, temperature, start, end);
+//        Board board = new Board(brightness, temperature, start, end);
+        Board board = new Board(brightness, temperature, timeUp);
 
         String id = sp.getString("ID", "");
-        String token = sp.getString("BOARD_TOKEN", "");
+        final String token = sp.getString("BOARD_TOKEN", "");
 
-        Call<Board> call = restAPI.getQsfService().updateBoard(id, token, board);
+        Call<Board> call = restAPI.getQsfService().editBoard(id, token, board);
         call.enqueue(new Callback<Board>() {
             @Override
             public void onResponse(Call<Board> call, Response<Board> response) {
@@ -317,6 +367,9 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
                 if(status == 204) {
                     Toast.makeText(getContext(), "Configs Success", Toast.LENGTH_SHORT).show();
+                    if(mqtt.isConnected()) {
+                        mqtt.publish("/" + token + "/configs", "YES");
+                    }
                 } else {
                     Toast.makeText(getContext(), "Configs Fail", Toast.LENGTH_SHORT).show();
                 }
@@ -327,6 +380,17 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
             }
         });
+    }
+
+    private int getIndex(Spinner spinner, String myString){
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).equals(myString)){
+                index = i;
+            }
+        }
+        return index;
     }
 
 }

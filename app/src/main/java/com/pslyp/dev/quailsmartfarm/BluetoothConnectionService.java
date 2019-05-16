@@ -159,7 +159,7 @@ public class BluetoothConnectionService {
                 } catch (IOException e1) {
                     Log.e(TAG, "mConnectThread: run: Unable to close connection in socket " + e1.getMessage());
                 }
-                Log.d(TAG, "run: ConnectThread: Could not connect to UUID: " + MY_UUID_INSECURE );
+                Log.d(TAG, "run: ConnectThread: Could not connectMQTT to UUID: " + MY_UUID_INSECURE );
             }
 
             //will talk about this in the 3rd video

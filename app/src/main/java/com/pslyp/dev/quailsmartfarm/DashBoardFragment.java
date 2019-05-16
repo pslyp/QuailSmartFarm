@@ -1,6 +1,5 @@
 package com.pslyp.dev.quailsmartfarm;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -26,9 +25,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-//import io.netpie.microgear.Microgear;
-//import io.netpie.microgear.MicrogearEventListener;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,11 +38,12 @@ public class DashBoardFragment extends Fragment {
     MqttAndroidClient client;
     IMqttToken token;
 
-    String MQTTHOST = "tcp://35.240.137.230:1883";
+    String MQTTHOST = "tcp://35.240.245.133:1883";
     String USERNAME = "pslyp";
     String PASSWORD = "1475369";
 
-    String board_token = "";
+    private String id = "";
+    private String board_token = "";
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -84,15 +81,12 @@ public class DashBoardFragment extends Fragment {
                 networkInfo.isConnected();
 
         sp = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        String board_token = sp.getString("BOARD_TOKEN", "");
-        String tokenString = "4C31A6DBCD72FF1171332936EFDBF273";
-        if(isConnected) {
+        id = sp.getString("ID", "");
+        board_token = sp.getString("BOARD_TOKEN", "");
+//        String tokenString = "4C31A6DBCD72FF1171332936EFDBF273";
 
-//            String board_token = "4C31A6DBCD72FF1171332936EFDBF273";
-//            StringBuffer board_token = new StringBuffer(sp.getString("BOARD_TOKEN", ""));
-//            Toast.makeText(getContext(), board_token, Toast.LENGTH_SHORT).show();
-                connect(board_token);
-                callBack(board_token);
+        if(isConnected) {
+            connectMQTT();
         }
     }
 
@@ -102,10 +96,7 @@ public class DashBoardFragment extends Fragment {
         inflater.inflate(R.menu.main, menu);
     }
 
-    public void connect(final String board_token) {
-        final String id = sp.getString("ID", "");
-        final String personToken = sp.getString("PERSON_TOKEN", "");
-
+    public void connectMQTT() {
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(getContext().getApplicationContext(), MQTTHOST, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
@@ -117,7 +108,7 @@ public class DashBoardFragment extends Fragment {
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(getContext(), "Connect Success", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Connect Success", Toast.LENGTH_SHORT).show();
 
                     subscribe("/" + board_token + "/brightness", 1);
                     subscribe("/" + board_token + "/temperature", 1);
@@ -143,21 +134,11 @@ public class DashBoardFragment extends Fragment {
             e.printStackTrace();
         }
 
-        callBack(this.board_token);
+        callBack();
     }
 
     public void publish(String topic, String text) {
-//        byte[] encodePayload = new byte[0];
         try {
-//            String topic2 = "/cloudMessage";
-//            String message2 = "cwui9n92gqM:APA91bE5fYxbMAV_ZFAwmRdg7hoXvGcPobCXF_Pli93n80bEoNuEwIgO2csSqbXTVJvuJuVhpCQ7iiADUWQnLTU3y7mj0pWrzlQwXXqT6Oh_Oi98-6Dni0NcTP40gt_jlXXYbLWSoAih";
-//
-//            MqttMessage message = new MqttMessage();
-//            message.setPayload(text.getBytes());
-
-//            encodePayload = text.getBytes("UTF-8");
-//            MqttMessage message = new MqttMessage(encodePayload);
-
             client.publish(topic, text.getBytes(), 0 ,false);
         } catch (MqttException e) {
             e.printStackTrace();
@@ -183,7 +164,7 @@ public class DashBoardFragment extends Fragment {
         }
     }
 
-    private void callBack(final String board_token) {
+    private void callBack() {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {

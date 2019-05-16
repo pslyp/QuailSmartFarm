@@ -229,7 +229,7 @@
 //        String photo_url = sp.getString("URL_PHOTO", "");
 //
 //        if (isConnected) {
-//            mqtt.connect();
+//            mqtt.connectMQTT();
 //
 //            Log.e("Photo", photo_url);
 //

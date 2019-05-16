@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
 
     public void initInstance(View view) {
 //        mqtt = new MQTT(getContext());
-//        mqtt.connect();
+//        mqtt.connectMQTT();
 
         restAPI = new RestAPI();
 

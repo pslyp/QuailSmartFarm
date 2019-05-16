@@ -26,7 +26,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 
     Button addBtn, scanQrCodeBtn;
     TextView mTitle;
-    TextInputLayout token, name;
+    TextInputLayout boardTokenTextInput, nameTokenTextInput;
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -76,8 +76,8 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         mTitle = findViewById(R.id.toolbar_title);
         addBtn = findViewById(R.id.button_add_board);
         scanQrCodeBtn = findViewById(R.id.button_scan_qr_code);
-        token = findViewById(R.id.text_input_board_token);
-        name = findViewById(R.id.text_input_board_name);
+        boardTokenTextInput = findViewById(R.id.text_input_board_token);
+        nameTokenTextInput = findViewById(R.id.text_input_board_name);
 
         addBtn.setOnClickListener(this);
         scanQrCodeBtn.setOnClickListener(this);
@@ -95,26 +95,37 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void checkBoard() {
-//        final String id = sp.getString("ID", "");
-        final String tokenString = sp.getString("BOARD_TOKEN", "");
-        final String id = "117699091589038964647";
+        final String id = sp.getString("ID", "");
+//        final String tokenString = sp.getString("BOARD_TOKEN", "");
+//        final String id = "117699091589038964647";
 //        final String board_token = "4C31A6DBCD72FF1171332936EFDBF273";
+        String board_token = boardTokenTextInput.getEditText().getText().toString();
+        String board_name = nameTokenTextInput.getEditText().getText().toString();
+
+        if(checkInputEmpty(board_token, board_name)) {
+            return;
+        }
+
+        final String board_token_md5 = md5.create(board_token);
+
+//            Toast.makeText(this, "Lenght 0", Toast.LENGTH_SHORT).show();
+//        String board_token = md5.create(boardTokenTextInput.getEditText().getText().toString());
 
         Log.e("Add", id);
 
-        Call<User> call = restAPI.getQsfService().getBoardByToken(id, tokenString);
+        Call<User> call = restAPI.getQsfService().getBoardByToken(id, board_token_md5);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 int status = response.code();
 
-                Toast.makeText(AddBoard.this, String.valueOf(status), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(AddBoard.this, String.valueOf(status), Toast.LENGTH_SHORT).show();
 
                 if(status == 200) {
-                    Toast.makeText(AddBoard.this, "Token sum", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBoard.this, "Device ID is already used", Toast.LENGTH_SHORT).show();
                 }
                 if(status == 204){
-                    addBoard(id);
+                    addBoard(id, board_token_md5);
                 }
             }
 
@@ -125,13 +136,13 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         });
     }
 
-    private void addBoard(final String id) {
-        final String tokenString = md5.create(token.getEditText().getText().toString());
+    private void addBoard(final String id, final String tokenString) {
+//        final String tokenString = md5.create(boardTokenTextInput.getEditText().getText().toString());
 //        String t = token.getEditText().getText().toString();
-        String n = name.getEditText().getText().toString();
+        String n = nameTokenTextInput.getEditText().getText().toString();
         final String personToken = sp.getString("PERSON_TOKEN", "");
 
-        Toast.makeText(this, tokenString, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, tokenString, Toast.LENGTH_SHORT).show();
 
         editor = sp.edit();
         editor.putString("BOARD_TOKEN", tokenString);
@@ -151,10 +162,12 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 //                        mqtt.publish("/" + tokenString + "/cloudMessage", personToken.substring(140) + ">3");
 //                    }
 
+                    Toast.makeText(AddBoard.this, "Add Device success", Toast.LENGTH_SHORT).show();
+
                     startActivity(new Intent(AddBoard.this, MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(AddBoard.this, "Add board fail.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBoard.this, "Add Device fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -163,6 +176,26 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 
             }
         });
+    }
+
+    private boolean checkInputEmpty(String board_token, String board_name) {
+        if(board_token.isEmpty() || board_name.isEmpty()) {
+            if(board_token.isEmpty()) {
+                boardTokenTextInput.setError("Device ID can't be empty");
+            } else {
+                boardTokenTextInput.setError(null);
+            }
+            if(board_name.isEmpty()) {
+                nameTokenTextInput.setError("Device Name can't be empty");
+            } else{
+                nameTokenTextInput.setError(null);
+            }
+            return true;
+        } else {
+            boardTokenTextInput.setError(null);
+            nameTokenTextInput.setError(null);
+            return false;
+        }
     }
 
     @Override
@@ -174,7 +207,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
                 String barcode = data.getStringExtra("SCAN_RESULT");
                 Toast.makeText(this, barcode, Toast.LENGTH_SHORT).show();
 
-                token.getEditText().setText(barcode);
+                boardTokenTextInput.getEditText().setText(barcode);
             }
         }
     }

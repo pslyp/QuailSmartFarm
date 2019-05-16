@@ -156,7 +156,7 @@ public class BluetoothService {
             try {
                 mSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
+                Log.e(TAG, "Could not close the connectMQTT socket", e);
             }
         }
     }

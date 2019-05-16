@@ -12,22 +12,19 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.UnsupportedEncodingException;
-
 public class MQTT {
 
-    private MainActivity main;
     private Context context;
 
     private String clientId;
-    MqttAndroidClient client;
-    IMqttToken token;
+    private MqttAndroidClient client;
+    private IMqttToken token;
 
-    String MQTTHOST = "tcp://35.240.137.230:1883";
+    String MQTTHOST = "tcp://35.240.245.133:1883";
     String USERNAME = "pslyp";
     String PASSWORD = "1475369";
 
-    private boolean connected = false;
+    private boolean connected;
 
     public MQTT(Context context) {
         this.context = context;

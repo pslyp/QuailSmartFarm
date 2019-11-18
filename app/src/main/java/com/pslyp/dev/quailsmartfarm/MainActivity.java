@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,13 +15,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.pslyp.dev.quailsmartfarm.activities.AddBoardActivity;
+import com.pslyp.dev.quailsmartfarm.activities.DeviceListActivity;
+import com.pslyp.dev.quailsmartfarm.activities.LogInActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private DashBoardFragment dashBoardFragment = new DashBoardFragment();
+    private ConfigFragment configFragment = new ConfigFragment();
 
     private TextView mTitle;
     private Fragment dashBoard, config, me;
@@ -40,7 +44,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initInstance();
+        //Check Login
+        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        boolean isLogIn = sp.getBoolean("LOG_IN", false);
+
+        if(!isLogIn) {
+            startActivity(new Intent(MainActivity.this, LogInActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(MainActivity.this, DeviceListActivity.class));
+            finish();
+        }
+
+//        initInstance();
 
 //        BottomNavigationView navigation = findViewById(R.id.navigation);
 //        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -59,28 +75,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
-        //Check Login
-        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        boolean isLogIn = sp.getBoolean("LOG_IN", false);
-
-        if(!isLogIn) {
-            startActivity(new Intent(MainActivity.this, Authentication.class));
-            finish();
-        }
+//        //Check Login
+//        SharedPreferences sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+//        boolean isLogIn = sp.getBoolean("LOG_IN", false);
+//
+//        if(!isLogIn) {
+//            startActivity(new Intent(MainActivity.this, LogInActivity.class));
+//            finish();
+//        }
+//
+//        startActivity(new Intent(MainActivity.this, DeviceListActivity.class));
+//        finish();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        finish();
-//    }
+    @Override
+    public void onBackPressed() {
+//        int selectItemId = navView.getSelectedItemId();
+//
+//        if(R.id.nav_home != selectItemId) {
+//            loadFragment(homeFragment);
+//            navView.setSelectedItemId(R.id.nav_home);
+//        }
+//
+//        if(R.id.nav_home == selectItemId) {
+//            Toast.makeText(this, "กด 'กลับ' อีกครั้งเพื่อออก", Toast.LENGTH_SHORT).show();
+//
+//            click++;
+//            if (click == 2)
+////                finish();
+//                super.onBackPressed();
+//
+//            timer = new TimerTask() {
+//                @Override
+//                public void run() {
+//                    click = 0;
+//                    timer.cancel();
+//                }
+//            };
+//
+//            _timer.schedule(timer, 1000);
+//        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_menu:
                 //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, AddBoard.class));
+                startActivity(new Intent(MainActivity.this, AddBoardActivity.class));
                 finish();
 //                AddBoardDialog addBoardDialog = new AddBoardDialog();
 //                addBoardDialog.show(getSupportFragmentManager(), "add board");
@@ -124,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mTitle.setText("Dashboard");
         setTitle("");
-        loadFragment(dashBoard);
+        loadFragment(dashBoardFragment);
     }
 
     @Override
@@ -142,12 +184,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(id == R.id.nav_dash_board) {
             mTitle.setText("Dashboard");
 //            setTitle("Dashboard");
-            loadFragment(dashBoard);
+            loadFragment(dashBoardFragment);
         }
         if(id == R.id.nav_configs) {
             mTitle.setText("Configs");
 //            setTitle("Configs");
-            loadFragment(config);
+            loadFragment(configFragment);
         }
         if(id == R.id.nav_sign_out) {
             item.setChecked(false);
@@ -203,18 +245,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    };
 
     private void loadFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-        for (Fragment fragments:getSupportFragmentManager().getFragments()) {
-            if (fragments instanceof DashBoardFragment) {
-                continue;
-            }
-            else if (fragments != null) {
-                getSupportFragmentManager().beginTransaction().remove(fragments).commit();
-            }
+        if (fragment != null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, fragment);
+//          transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 

@@ -1,19 +1,19 @@
-package com.pslyp.dev.quailsmartfarm;
+package com.pslyp.dev.quailsmartfarm.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.pslyp.dev.quailsmartfarm.R;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -25,11 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class DashBoardFragment extends Fragment {
+public class DashboardActivity extends AppCompatActivity {
 
     private LinearLayout lampStatus, fanStatus, feedStatus, waterStatus;
     private TextView mBright, mTemp;
@@ -39,7 +35,7 @@ public class DashBoardFragment extends Fragment {
     IMqttToken token;
 
     String MQTTHOST = "tcp://test.mosquitto.org:1883";       //New Host
-//    String MQTTHOST = "tcp://35.240.245.133:1883";    //Old Host
+    //    String MQTTHOST = "tcp://35.240.245.133:1883";    //Old Host
     String USERNAME = "pslyp";
     String PASSWORD = "1475369";
 
@@ -50,41 +46,35 @@ public class DashBoardFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private String PREF_NAME = "LoginPreferences";
 
-    public DashBoardFragment() {
-        // Required empty public constructor
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_dash_board, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dashboard);
 
-        setHasOptionsMenu(true);
-
-        initInsance(view);
-
-        return view;
+        initInstance();
     }
 
-    private void initInsance(View view) {
-        lampStatus = view.findViewById(R.id.linear_layout_lamp_status);
-        fanStatus = view.findViewById(R.id.linear_layout_fan_status);
-        feedStatus = view.findViewById(R.id.linear_layout_feed_status);
-        waterStatus = view.findViewById(R.id.linear_layout_water_status);
-        mBright = view.findViewById(R.id.text_view_bright);
-        mTemp = view.findViewById(R.id.text_view_temp);
+    private void initInstance() {
+        lampStatus = findViewById(R.id.linear_layout_lamp_status);
+        fanStatus = findViewById(R.id.linear_layout_fan_status);
+        feedStatus = findViewById(R.id.linear_layout_feed_status);
+        waterStatus = findViewById(R.id.linear_layout_water_status);
+        mBright = findViewById(R.id.text_view_bright);
+        mTemp = findViewById(R.id.text_view_temp);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         boolean isConnected = networkInfo != null &&
                 networkInfo.isConnected();
 
-        sp = getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        sp = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         id = sp.getString("ID", "");
-        board_token = sp.getString("BOARD_TOKEN", "");
+//        board_token = sp.getString("BOARD_TOKEN", "");
 //        board_token = "CA36842D556CDC6182F68FD244B63AD0";
+
+        board_token = getIntent().getStringExtra("TOKEN");
+        Log.e("Dashboard TOKEN", board_token);
 
         if(isConnected) {
             connectMQTT();
@@ -92,14 +82,26 @@ public class DashBoardFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main, menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.dashboard, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.config_menu :
+                Intent intent = new Intent(DashboardActivity.this, ConfigActivity.class);
+                intent.putExtra("TOKEN", board_token);
+                startActivity(intent);
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 
     public void connectMQTT() {
         clientId = MqttClient.generateClientId();
-        client = new MqttAndroidClient(getContext().getApplicationContext(), MQTTHOST, clientId);
+        client = new MqttAndroidClient(getApplicationContext(), MQTTHOST, clientId);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setUserName(USERNAME);
         options.setPassword(PASSWORD.toCharArray());

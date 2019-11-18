@@ -8,21 +8,20 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pslyp.dev.quailsmartfarm.R;
-import com.pslyp.dev.quailsmartfarm.models.Board;
+import com.pslyp.dev.quailsmartfarm.models.Device;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class DeviceListAdapter extends ArrayAdapter<Board> {
+public class DeviceListAdapter extends ArrayAdapter<Device> {
 
     private Context mContext;
-    private List<Board> mDeviceArrayList;
+    private List<Device> mDeviceArrayList;
     private int mLayoutResId;
 
-    public DeviceListAdapter(@NonNull Context context, int resource, List<Board> objects) {
+    public DeviceListAdapter(@NonNull Context context, int resource, List<Device> objects) {
         super(context, resource, objects);
 
         this.mContext = context;
@@ -36,13 +35,13 @@ public class DeviceListAdapter extends ArrayAdapter<Board> {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(mLayoutResId, null);
 
-        Board board = mDeviceArrayList.get(position);
+        Device device = mDeviceArrayList.get(position);
 
-        if(board != null) {
+        if(device != null) {
             TextView deviceName = view.findViewById(R.id.text_view_name);
 
-            if(board.getName() != null) {
-                deviceName.setText(board.getName());
+            if(device.getName() != null) {
+                deviceName.setText(device.getName());
             }
         }
 

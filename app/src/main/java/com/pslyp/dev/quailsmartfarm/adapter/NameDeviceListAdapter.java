@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pslyp.dev.quailsmartfarm.R;
-import com.pslyp.dev.quailsmartfarm.models.Board;
 
 import java.util.ArrayList;
 

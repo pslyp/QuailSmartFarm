@@ -5,19 +5,26 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
 
-    public MD5() {}
+    private static MD5 mInstance;
+
+    public static synchronized MD5 getInstance() {
+        if(mInstance == null) {
+            mInstance = new MD5();
+        }
+        return mInstance;
+    }
 
     public String create(String s) {
         try {
             // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(s.getBytes());
+            byte digest[] = md.digest();
 
             // Create Hex String
             StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++)
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            for (byte d : digest)
+                hexString.append(String.format("%02x", d));
 
             return hexString.toString().toUpperCase();
         }catch (NoSuchAlgorithmException e) {

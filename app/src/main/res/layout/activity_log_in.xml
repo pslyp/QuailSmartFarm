@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LogIn">
+    tools:context=".activities.LogInActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -24,11 +24,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
+                android:fontFamily="@font/fc_lamoon_regular"
                 android:gravity="center_horizontal"
                 android:text="Toolbar Title"
-                android:textSize="33sp"
                 android:textColor="#FFFFFF"
-                android:fontFamily="@font/fc_lamoon_regular"/>
+                android:textSize="33sp" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -37,17 +37,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_marginTop="100sp"
+        android:orientation="vertical"
+        android:padding="32dp">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/text_input_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email">
+                android:hint="@string/email">
 
             </android.support.design.widget.TextInputEditText>
 
@@ -55,16 +58,18 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/text_input_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_input_email"
+            android:layout_marginTop="@dimen/margin_padding_large"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:inputType="textPassword">
 
             </android.support.design.widget.TextInputEditText>
@@ -76,17 +81,62 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_input_password"
-            android:layout_centerHorizontal="true"
-            android:text="Forgot Password?"
-            android:textSize="18sp" />
+            android:layout_alignParentRight="true"
+            android:fontFamily="@font/fc_lamoon_regular"
+            android:text="@string/forget_password"
+            android:textSize="@dimen/text_size_large" />
 
         <Button
             android:id="@+id/button_log_in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text_view_forgot_password"
-            android:text="Log In"
-            android:textSize="18sp" />
+            android:layout_below="@id/text_view_forgot_password"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_padding_extra_large"
+            android:background="@drawable/bg_signin_button"
+            android:fontFamily="@font/fc_lamoon_regular"
+            android:text="@string/log_in"
+            android:textSize="@dimen/text_size_extra_large" />
+
+        <TextView
+            android:id="@+id/or_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button_log_in"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_padding_large"
+            android:text="@string/or"
+            android:textSize="@dimen/text_size" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/or_text_view"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_padding_large" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account ? "
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/sign_up_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up"
+                android:textColor="@color/colorPrimaryDark" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

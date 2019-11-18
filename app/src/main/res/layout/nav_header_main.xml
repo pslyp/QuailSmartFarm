@@ -14,7 +14,7 @@
         <!--android:id="@+id/image_view_account"-->
         <!--android:layout_width="50dp"-->
         <!--android:layout_height="50dp"-->
-        <!--app:srcCompat="@drawable/ic_settings_black_24dp" />-->
+        <!--app:srcCompat="@drawable/ic_settings_white_24dp" />-->
     
     <TextView
         android:id="@+id/text_view_email"

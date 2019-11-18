@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ConfigActivity">
+
+    <ProgressBar
+        android:id="@+id/config_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!--<com.jaredrummler.materialspinner.MaterialSpinner-->
+        <!--android:id="@+id/spinner_device"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:ms_hint="Choose device" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Brightness"
+                android:textSize="35sp" />
+
+            <TextView
+                android:id="@+id/text_view_bright"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="--"
+                android:textSize="35sp" />
+
+            <TextView
+                android:layout_width="22sp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="V"
+                android:textSize="35sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_large"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Temperature"
+                android:textSize="35sp" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/text_view_temp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:fontFamily="@font/fc_lamoon_regular"-->
+<!--                android:text="&#45;&#45;"-->
+<!--                android:textSize="35sp" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="22sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/fc_lamoon_regular"-->
+<!--                android:text="'C"-->
+<!--                android:textSize="35sp" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_small"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/text_size_extra_large"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Min: "
+                android:textSize="@dimen/text_size_extra_large" />
+
+            <TextView
+                android:id="@+id/text_view_temp_min"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="--"
+                android:textSize="@dimen/text_size_extra_large" />
+
+            <TextView
+                android:layout_width="22sp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="'C"
+                android:textSize="@dimen/text_size_extra_large" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_small"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/text_size_extra_large"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Max: "
+                android:textSize="@dimen/text_size_extra_large" />
+
+            <TextView
+                android:id="@+id/text_view_temp_max"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="--"
+                android:textSize="@dimen/text_size_extra_large" />
+
+            <TextView
+                android:layout_width="22sp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="'C"
+                android:textSize="@dimen/text_size_extra_large" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Start Time"
+                android:textSize="35sp" />
+
+            <LinearLayout
+                android:id="@+id/linear_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_view_start_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text="--"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text=":"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:id="@+id/text_view_start_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text="--"
+                    android:textSize="35sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="20sp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="End Time"
+                android:textSize="35sp" />
+
+            <LinearLayout
+                android:id="@+id/linear_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_view_end_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text="--"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text=":"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:id="@+id/text_view_end_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fc_lamoon_regular"
+                    android:text="--"
+                    android:textSize="35sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="20sp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:text="Time Plus"
+                android:textSize="35sp" />
+
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/text_view_temp" />
+
+            <TextView
+                android:id="@+id/text_view_hr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fc_lamoon_regular"
+                android:gravity="right"
+                android:text="hr"
+                android:textSize="35sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24sp"
+            android:background="#F5D2A7"
+            android:fontFamily="@font/fc_lamoon_regular"
+            android:text="Save"
+            android:textSize="35sp" />
+
+        <Button
+            android:id="@+id/button_internet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Internet"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>

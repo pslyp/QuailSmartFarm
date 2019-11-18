@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,12 +22,10 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.pslyp.dev.quailsmartfarm.activities.SignUpActivity;
+import com.pslyp.dev.quailsmartfarm.activities.LogInActivity;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.models.Status;
 import com.pslyp.dev.quailsmartfarm.models.User;
-
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -179,7 +176,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     //Open Create Account Activity
     private void createAccount() {
-        startActivity(new Intent(Authentication.this, CreateAccount.class));
+        startActivity(new Intent(Authentication.this, SignUpActivity.class));
         //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         //finish();
     }
@@ -234,7 +231,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
     //Open Login Activity
     private void logIn() {
-        Intent logInIntent = new Intent(Authentication.this, LogIn.class);
+        Intent logInIntent = new Intent(Authentication.this, LogInActivity.class);
         startActivity(logInIntent);
         //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         //finish();

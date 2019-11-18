@@ -3,46 +3,26 @@ package com.pslyp.dev.quailsmartfarm;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pslyp.dev.quailsmartfarm.activities.AddBoardActivity;
 import com.pslyp.dev.quailsmartfarm.adapter.DeviceListAdapter;
-import com.pslyp.dev.quailsmartfarm.adapter.NameDeviceListAdapter;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.models.Board;
+import com.pslyp.dev.quailsmartfarm.models.Device;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
 //import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -67,7 +45,7 @@ public class HomeFragment extends Fragment {
 
     private RestAPI restAPI;
     private ArrayList<String> nameDeviceList;
-    private List<Board> deviceList;
+    private List<Device> deviceList;
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -116,7 +94,7 @@ public class HomeFragment extends Fragment {
         linearLayout1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), AddBoard.class));
+                startActivity(new Intent(getContext(), AddBoardActivity.class));
             }
         });
         mDeviceListView = view.findViewById(R.id.list_view_device);
@@ -164,10 +142,10 @@ public class HomeFragment extends Fragment {
 
                 if(status == 200) {
                     User user = response.body();
-//                    List<Board> boards = user.getBoard();
-                    deviceList = user.getBoard();
+//                    List<Device> boards = user.getDevice();
+                    deviceList = user.getDevice();
 
-//                    for(Board board : boards) {
+//                    for(Device board : boards) {
 //                        nameDeviceList.add(board.getName());
 //                    }
 

@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#E0B28D</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBottom">#FFFFFF</color>
+
+    <color name="signinButton">#E0B28D</color>
+
 </resources>

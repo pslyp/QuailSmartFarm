@@ -26,7 +26,7 @@
 //import android.widget.Toast;
 //
 //import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-//import com.pslyp.dev.quailsmartfarm.models.Board;
+//import com.pslyp.dev.quailsmartfarm.models.Device;
 //import com.pslyp.dev.quailsmartfarm.models.User;
 //
 //import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -125,7 +125,7 @@
 ////        switch (item.getItemId()) {
 ////            case R.id.add_menu:
 ////                //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
-//////                Intent intent = new Intent(MainActivity.this, AddBoard.class);
+//////                Intent intent = new Intent(MainActivity.this, AddBoardActivity.class);
 //////                startActivity(intent);
 //////                finish();
 //////                AddBoardDialog addBoardDialog = new AddBoardDialog();
@@ -283,7 +283,7 @@
 //    private void getBoardList(String id) {
 //        Log.e("ID", id);
 //
-//        Call<User> call = restAPI.getQsfService().getBoard(id);
+//        Call<User> call = restAPI.getQsfService().getDevice(id);
 //        call.enqueue(new Callback<User>() {
 //            @Override
 //            public void onResponse(Call<User> call, Response<User> response) {
@@ -291,10 +291,10 @@
 //                int status = response.code();
 //                if (status == 200) {
 //                    User user = response.body();
-//                    List<Board> boards = user.getBoard();
+//                    List<Device> boards = user.getDevice();
 //
 //                    String b = "";
-//                    for (Board board : boards) {
+//                    for (Device board : boards) {
 //                        b += board.getToken();
 //                        tokenList.add(board.getToken());
 //                    }
@@ -319,7 +319,7 @@
 //
 //    private void setDashBoard(List<String> tokenList) {
 //        if (!tokenList.isEmpty()) {
-//            Log.e("Board", "not empty");
+//            Log.e("Device", "not empty");
 //
 //            dashboard.setVisibility(View.VISIBLE);
 //            progressBar.setVisibility(View.GONE);

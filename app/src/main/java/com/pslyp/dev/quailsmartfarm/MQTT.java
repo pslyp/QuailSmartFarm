@@ -20,9 +20,11 @@ public class MQTT {
     private MqttAndroidClient client;
     private IMqttToken token;
 
-    String MQTTHOST = "tcp://35.240.245.133:1883";
-    String USERNAME = "pslyp";
-    String PASSWORD = "1475369";
+//    String MQTTHOST = "tcp://35.240.245.133:1883";
+//    String USERNAME = "pslyp";
+//    String PASSWORD = "1475369";
+
+    String MQTTHOST = "tcp://test.mosquitto.org:1883";
 
     private boolean connected;
 
@@ -37,12 +39,12 @@ public class MQTT {
     public void connect() {
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(context.getApplicationContext(), MQTTHOST, clientId);
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setUserName(USERNAME);
-        options.setPassword(PASSWORD.toCharArray());
+//        MqttConnectOptions options = new MqttConnectOptions();
+//        options.setUserName(USERNAME);
+//        options.setPassword(PASSWORD.toCharArray());
 
         try {
-            token = client.connect(options);
+            token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {

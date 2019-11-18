@@ -10,7 +10,7 @@ public class User {
     private String email;
     private String password;
     private String msgToken;
-    private List<Board> board;
+    private List<Device> device;
 
     public User(String id, String email, String password) {
         this.id = id;
@@ -46,8 +46,8 @@ public class User {
         return password;
     }
 
-    public List<Board> getBoard() {
-        return board;
+    public List<Device> getDevice() {
+        return device;
     }
 
     public String getMsgToken() {

@@ -1,7 +1,7 @@
 package com.pslyp.dev.quailsmartfarm.api;
 
-import com.pslyp.dev.quailsmartfarm.models.Board;
-import com.pslyp.dev.quailsmartfarm.models.Status;
+import com.pslyp.dev.quailsmartfarm.models.Device;
+import com.pslyp.dev.quailsmartfarm.models.DeviceListResponse;
 import com.pslyp.dev.quailsmartfarm.models.User;
 
 import java.util.List;
@@ -30,8 +30,11 @@ public interface qsfService {
     @POST("user/{id}/board")
     Call<User> getBoard(@Path("id") String id);
 
-    @POST("user/{id}/board/{token}")
-    Call<User> getBoardByToken(@Path("id") String id, @Path("token") String token);
+    @GET("user/{id}/board")
+    Call<DeviceListResponse> getBoardById(@Path("id") String id);
+
+    @GET("user/{id}/board/{token}")
+    Call<DeviceListResponse> getBoardByIdAndToken(@Path("id") String id, @Path("token") String token);
 
     @POST("user/login")
     Call<User> logIn(@Query("email") String email, @Query("pass") String pass);
@@ -49,9 +52,9 @@ public interface qsfService {
     );
 
     @PUT("user/{id}")
-    Call<Board> insertBoard(@Path("id") String id, @Body Board board);
+    Call<Device> insertBoard(@Path("id") String id, @Body Device device);
 
     @PUT("user/{id}/board/{token}")
-    Call<Board> editBoard(@Path("id") String id, @Path("token") String token, @Body Board board);
+    Call<Device> editBoard(@Path("id") String id, @Path("token") String token, @Body Device device);
 
 }

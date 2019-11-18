@@ -1,4 +1,4 @@
-package com.pslyp.dev.quailsmartfarm;
+package com.pslyp.dev.quailsmartfarm.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,16 +13,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pslyp.dev.quailsmartfarm.MQTT;
+import com.pslyp.dev.quailsmartfarm.MainActivity;
+import com.pslyp.dev.quailsmartfarm.R;
+import com.pslyp.dev.quailsmartfarm.ScanActivity;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
 import com.pslyp.dev.quailsmartfarm.encrypt.MD5;
-import com.pslyp.dev.quailsmartfarm.models.Board;
-import com.pslyp.dev.quailsmartfarm.models.User;
+import com.pslyp.dev.quailsmartfarm.models.Device;
+import com.pslyp.dev.quailsmartfarm.models.DeviceListResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddBoard extends AppCompatActivity implements View.OnClickListener {
+public class AddBoardActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button addBtn, scanQrCodeBtn;
     TextView mTitle;
@@ -52,7 +56,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_scan_qr_code:
-                startActivityForResult(new Intent(AddBoard.this, ScanActivity.class), SCAN_QR_CODE);
+                startActivityForResult(new Intent(AddBoardActivity.this, ScanActivity.class), SCAN_QR_CODE);
                 break;
             case R.id.button_add_board:
                 checkBoard();
@@ -64,7 +68,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
     public void onBackPressed() {
         super.onBackPressed();
 
-        startActivity(new Intent(AddBoard.this, MainActivity.class));
+        startActivity(new Intent(AddBoardActivity.this, MainActivity.class));
         finish();
     }
 
@@ -86,7 +90,7 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         mTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
 
-        mTitle.setText("Add Board");
+        mTitle.setText("Add Device");
         setTitle("");
 
         sp = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -113,16 +117,16 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 
         Log.e("Add", id);
 
-        Call<User> call = restAPI.getQsfService().getBoardByToken(id, board_token_md5);
-        call.enqueue(new Callback<User>() {
+        Call<DeviceListResponse> call = restAPI.getQsfService().getBoardByIdAndToken(id, board_token_md5);
+        call.enqueue(new Callback<DeviceListResponse>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<DeviceListResponse> call, Response<DeviceListResponse> response) {
                 int status = response.code();
 
-//                Toast.makeText(AddBoard.this, String.valueOf(status), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(AddBoardActivity.this, String.valueOf(status), Toast.LENGTH_SHORT).show();
 
                 if(status == 200) {
-                    Toast.makeText(AddBoard.this, "Device ID is already used", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBoardActivity.this, "Device ID is already used", Toast.LENGTH_SHORT).show();
                 }
                 if(status == 204){
                     addBoard(id, board_token_md5);
@@ -130,10 +134,11 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
+            public void onFailure(Call<DeviceListResponse> call, Throwable t) {
+                Log.e("Check Device Add Device", t.getMessage());
             }
         });
+
     }
 
     private void addBoard(final String id, final String tokenString) {
@@ -148,11 +153,11 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
         editor.putString("BOARD_TOKEN", tokenString);
         editor.commit();
 
-//        Call<Board> call = restAPI.getQsfService().insertBoard(id, new Board(tokenString, n, 3000, 36, "0800", "2200"));
-        Call<Board> call = restAPI.getQsfService().insertBoard(id, new Board(tokenString, n, 3000, 36, "14", "0800", "2300"));
-        call.enqueue(new Callback<Board>() {
+//        Call<Device> call = restAPI.getQsfService().insertBoard(id, new Device(tokenString, n, 3000, 36, "0800", "2200"));
+        Call<Device> call = restAPI.getQsfService().insertBoard(id, new Device(tokenString, n, 3000, 36, "14", "0800", "2300"));
+        call.enqueue(new Callback<Device>() {
             @Override
-            public void onResponse(Call<Board> call, Response<Board> response) {
+            public void onResponse(Call<Device> call, Response<Device> response) {
                 int status = response.code();
 
                 if(status == 204) {
@@ -162,17 +167,17 @@ public class AddBoard extends AppCompatActivity implements View.OnClickListener 
 //                        mqtt.publish("/" + tokenString + "/cloudMessage", personToken.substring(140) + ">3");
 //                    }
 
-                    Toast.makeText(AddBoard.this, "Add Device success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBoardActivity.this, "Add Device success", Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(AddBoard.this, MainActivity.class));
+                    startActivity(new Intent(AddBoardActivity.this, MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(AddBoard.this, "Add Device fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddBoardActivity.this, "Add Device fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Board> call, Throwable t) {
+            public void onFailure(Call<Device> call, Throwable t) {
 
             }
         });

@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +23,7 @@ import android.widget.Toast;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.pslyp.dev.quailsmartfarm.api.RestAPI;
-import com.pslyp.dev.quailsmartfarm.models.Board;
-import com.pslyp.dev.quailsmartfarm.models.User;
+import com.pslyp.dev.quailsmartfarm.models.Device;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +52,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
     private List<String> boardTokens;
     private List<String> boardNames;
-    private List<Board> boardList;
+    private List<Device> deviceList;
 
     private String timeUp;
 
@@ -76,7 +73,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         restAPI = new RestAPI();
         boardTokens = new ArrayList<>();
         boardNames = new ArrayList<>();
-        boardList = new ArrayList<>();
+        deviceList = new ArrayList<>();
 
 //        device = view.findViewById(R.id.spinner_device);
         spinner = view.findViewById(R.id.spinner1);
@@ -114,12 +111,12 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 //            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
 //                if(position != -1) {
 //                    Toast.makeText(getContext(), position + item.toString() + "Token: " + boardTokens.get(position), Toast.LENGTH_SHORT).show();
-//                    textViewBright.setText(String.valueOf(boardList.get(position).getBrightness()));
-//                    textViewTemp.setText(String.valueOf(boardList.get(position).getTemperature()));
-//                    textViewStartHour.setText(String.valueOf(boardList.get(position).getStart().substring(0, 2)));
-//                    textViewStartMinute.setText(String.valueOf(boardList.get(position).getStart().substring(2)));
-//                    textViewEndHour.setText(String.valueOf(boardList.get(position).getEnd().substring(0, 2)));
-//                    textViewEndMinute.setText(String.valueOf(boardList.get(position).getEnd().substring(2)));
+//                    textViewBright.setText(String.valueOf(deviceList.get(position).getBrightness()));
+//                    textViewTemp.setText(String.valueOf(deviceList.get(position).getTemperature()));
+//                    textViewStartHour.setText(String.valueOf(deviceList.get(position).getStart().substring(0, 2)));
+//                    textViewStartMinute.setText(String.valueOf(deviceList.get(position).getStart().substring(2)));
+//                    textViewEndHour.setText(String.valueOf(deviceList.get(position).getEnd().substring(0, 2)));
+//                    textViewEndMinute.setText(String.valueOf(deviceList.get(position).getEnd().substring(2)));
 //                }
 //            }
 //        });
@@ -264,7 +261,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
     }
 
 //    private void setBoardArrayList(String id) {
-//        Call<User> boardCall = restAPI.getQsfService().getBoard(id);
+//        Call<User> boardCall = restAPI.getQsfService().getDevice(id);
 //        boardCall.enqueue(new Callback<User>() {
 //            @Override
 //            public void onResponse(Call<User> call, Response<User> response) {
@@ -272,10 +269,10 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 //                if(status == 200) {
 //                    User user = response.body();
 //
-//                    for(Board board : user.getBoard()) {
+//                    for(Device board : user.getDevice()) {
 //                        boardTokens.add(board.getToken());
 //                        boardNames.add(board.getName());
-//                        boardList.add(new Board(board.getToken(), board.getName(), board.getBrightness(), board.getTemperature(), board.getStart(), board.getEnd()));
+//                        deviceList.add(new Device(board.getToken(), board.getName(), board.getBrightness(), board.getTemperature(), board.getStart(), board.getEnd()));
 //                    }
 //                }
 //            }
@@ -293,57 +290,57 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
 
         Toast.makeText(getContext(), id + " " + token, Toast.LENGTH_SHORT).show();
 
-        Call<User> call = restAPI.getQsfService().getBoardByToken(id, token);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                int status = response.code();
-
-                if(status == 200) {
-                    User user = response.body();
-                    List<Board> boards = user.getBoard();
-
-//                    System.out.println(boards.get(0).getBrightness());
+//        Call<User> call = restAPI.getQsfService().getBoardByToken(id, token);
+//        call.enqueue(new Callback<User>() {
+//            @Override
+//            public void onResponse(Call<User> call, Response<User> response) {
+//                int status = response.code();
 //
-//                    for(Board board : boards) {
-//                        System.out.println(board.getBrightness());
-//                        System.out.println(board.getTemperature());
-//                        System.out.println(board.getStart());
-//                        System.out.println(board.getEnd());
-//                    }
-//                    Board board = boards.get(0);
-//                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
-
-                    int bright = boards.get(0).getBrightness();
-                    int temp = boards.get(0).getTemperature();
-                    String timeUp = boards.get(0).getTimeUp();
-                    String start = boards.get(0).getStart();
-                    String end = boards.get(0).getEnd();
-
-//                    Toast.makeText(getContext(), String.valueOf(temp), Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(getContext(), String.valueOf(bright), Toast.LENGTH_SHORT).show();
-
-//                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
-
-                    textViewBright.setText(String.valueOf(bright));
-                    textViewTemp.setText(String.valueOf(temp));
-                    spinner.setSelection(getIndex(spinner, timeUp));
-//                    textViewStartHour.setText(start.substring(0, 2));
-//                    textViewStartMinute.setText(start.substring(2));
-//                    textViewEndHour.setText(end.substring(0, 2));
-//                    textViewEndMinute.setText(end.substring(2));
-                } else if(status == 204) {
-                    Toast.makeText(getContext(), "No content", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
-            }
-        });
+//                if(status == 200) {
+//                    User user = response.body();
+//                    List<Device> devices = user.getDevice();
+//
+////                    System.out.println(devices.get(0).getBrightness());
+////
+////                    for(Device board : devices) {
+////                        System.out.println(board.getBrightness());
+////                        System.out.println(board.getTemperature());
+////                        System.out.println(board.getStart());
+////                        System.out.println(board.getEnd());
+////                    }
+////                    Device board = devices.get(0);
+////                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
+//
+//                    int bright = devices.get(0).getBrightness();
+//                    int temp = devices.get(0).getTemperature();
+//                    String timeUp = devices.get(0).getTimeUp();
+//                    String start = devices.get(0).getStart();
+//                    String end = devices.get(0).getEnd();
+//
+////                    Toast.makeText(getContext(), String.valueOf(temp), Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(getContext(), String.valueOf(bright), Toast.LENGTH_SHORT).show();
+//
+////                    Toast.makeText(getContext(), board.getBrightness(), Toast.LENGTH_SHORT).show();
+//
+//                    textViewBright.setText(String.valueOf(bright));
+//                    textViewTemp.setText(String.valueOf(temp));
+//                    spinner.setSelection(getIndex(spinner, timeUp));
+////                    textViewStartHour.setText(start.substring(0, 2));
+////                    textViewStartMinute.setText(start.substring(2));
+////                    textViewEndHour.setText(end.substring(0, 2));
+////                    textViewEndMinute.setText(end.substring(2));
+//                } else if(status == 204) {
+//                    Toast.makeText(getContext(), "No content", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(getContext(), "Fail", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<User> call, Throwable t) {
+//
+//            }
+//        });
 
     }
 
@@ -353,16 +350,16 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
         String start = textViewStartHour.getText().toString() + textViewStartMinute.getText().toString();
         String end = textViewEndHour.getText().toString() + textViewEndMinute.getText().toString();
 
-//        Board board = new Board(brightness, temperature, start, end);
-        Board board = new Board(brightness, temperature, timeUp);
+//        Device device = new Device(brightness, temperature, start, end);
+        Device device = new Device(brightness, temperature, timeUp);
 
         String id = sp.getString("ID", "");
         final String token = sp.getString("BOARD_TOKEN", "");
 
-        Call<Board> call = restAPI.getQsfService().editBoard(id, token, board);
-        call.enqueue(new Callback<Board>() {
+        Call<Device> call = restAPI.getQsfService().editBoard(id, token, device);
+        call.enqueue(new Callback<Device>() {
             @Override
-            public void onResponse(Call<Board> call, Response<Board> response) {
+            public void onResponse(Call<Device> call, Response<Device> response) {
                 int status = response.code();
 
                 if(status == 204) {
@@ -376,7 +373,7 @@ public class ConfigFragment extends Fragment implements NumberDialog.NumberDialo
             }
 
             @Override
-            public void onFailure(Call<Board> call, Throwable t) {
+            public void onFailure(Call<Device> call, Throwable t) {
 
             }
         });

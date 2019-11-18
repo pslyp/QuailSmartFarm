@@ -25,22 +25,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DeviceDashBoard"></activity>
+        <activity android:name=".activities.ConfigActivity"></activity>
+        <activity android:name=".activities.DashboardActivity" />
+        <activity
+            android:name=".activities.DeviceListActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ScanActivity" />
         <activity android:name=".Gauge" />
         <activity android:name=".SmartConfigWiFI" />
         <activity
-            android:name=".CreateAccount"
+            android:name=".activities.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.pslyp.dev.quailsmartfarm.Authentication" />
         </activity>
         <activity
-            android:name=".AddBoard"
+            android:name=".activities.AddBoardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LogIn"
+            android:name=".activities.LogInActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -82,16 +86,14 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".fcm.MyFirebaseMessagingService">
+        <service android:name=".fcm.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".fcm.MyFirebaseInstanceIDService">
+        <service android:name=".fcm.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
     </application>

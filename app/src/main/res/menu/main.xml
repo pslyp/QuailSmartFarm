@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/add_menu"
-        android:icon="@drawable/ic_add_circle_outline_black_24dp"
-        android:title="Add device"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/add_menu"-->
+<!--        android:icon="@drawable/ic_add_circle_outline_black_24dp"-->
+<!--        android:title="Add device"-->
+<!--        app:showAsAction="always" />-->
 
     <!--<item-->
         <!--android:id="@+id/qr_code_menu"-->
@@ -33,5 +33,17 @@
         <!--</menu>-->
 
     <!--</item>-->
+
+    <item
+        android:id="@+id/account_menu"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Account"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/logout_menu"
+                android:title="Logout" />
+        </menu>
+    </item>
 
 </menu>

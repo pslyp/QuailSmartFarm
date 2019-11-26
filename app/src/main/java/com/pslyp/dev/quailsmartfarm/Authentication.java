@@ -284,7 +284,7 @@ public class Authentication extends AppCompatActivity implements View.OnClickLis
 
             //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail, personToken));
+//            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail, personToken));
             //mqtt.publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);

@@ -189,7 +189,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("PERSON_TOKEN", personToken);
                     editor.commit();
 
-                    startActivity(new Intent(LogInActivity.this, MainActivity.class));
+                    startActivity(new Intent(LogInActivity.this, DeviceListActivity.class));
                     finish();
                 }
                 if(status == 204) {
@@ -270,7 +270,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
             //String result = (personName + "\n" + personGivenName + "\n" + personFamilyName + "\n" + personEmail + "\n" + personId);
 
-            setUser(personId, new User(personId, personGivenName, personGivenName, personEmail, personToken));
+            setUser(personId, new User(personId, personGivenName, personFamilyName, personEmail, personToken));
             //mqtt.publish("user/create", data);
 
             //AlertDialog.Builder builder = new AlertDialog.Builder(Authentication.this);
@@ -279,7 +279,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
             Toast.makeText(this, personToken, Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+            Intent intent = new Intent(LogInActivity.this, DeviceListActivity.class);
             startActivity(intent);
             finish();
         } else {

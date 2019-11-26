@@ -52,6 +52,9 @@ public interface qsfService {
     );
 
     @PUT("user/{id}")
+    Call<User> updateUser(@Path("id") String id, @Body String msgToken);
+
+    @PUT("user/{id}/board")
     Call<Device> insertBoard(@Path("id") String id, @Body Device device);
 
     @PUT("user/{id}/board/{token}")

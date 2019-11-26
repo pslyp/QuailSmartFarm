@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add_menu:
+            case R.id.account_menu:
                 //Toast.makeText(this, "Add board", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, AddBoardActivity.class));
                 finish();

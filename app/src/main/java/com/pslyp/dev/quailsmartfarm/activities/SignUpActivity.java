@@ -29,7 +29,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     Button signUp;
     TextView mTitle;
-    TextInputLayout email_text, pass_text;
+    TextInputLayout username_text, email_text, pass_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         mTitle = findViewById(R.id.toolbar_title);
         signUp = findViewById(R.id.button_sign_up);
+        username_text = findViewById(R.id.text_input_username);
         email_text = findViewById(R.id.text_input_email);
         pass_text = findViewById(R.id.text_input_password);
 
@@ -91,35 +92,46 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void createAccount() {
-        String id = String.valueOf((int)(Math.random() * 10000) + 1);
-        String email = email_text.getEditText().getText().toString();
-        String pass = md5.create(pass_text.getEditText().getText().toString());
+        //1176990915 8903896464 7
 
-        Log.e("Email", email);
-        Log.e("Pass", pass);
+        String id_one = String.valueOf((int)(Math.random() * 1000000000) + 1);
+        String id_two = String.valueOf((int)(Math.random() * 1000000000) + 1);
 
-        User user = new User(id, email, pass);
+        String id = (id_one + id_two);
+        String username = username_text.getEditText().getText().toString().trim();
+        String email = email_text.getEditText().getText().toString().trim();
+        String pass = md5.create(pass_text.getEditText().getText().toString().trim());
 
-        Call<User> call = restAPI.getQsfService().createUser(user);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                int status = response.code();
+//        if(!username.isEmpty() && !email.isEmpty() && !pass.isEmpty()) {
 
-                if(status == 200) {
-                    Toast.makeText(SignUpActivity.this, "Create Success", Toast.LENGTH_SHORT).show();
+            Log.e("Id", id);
+            Log.e("Email", email);
+            Log.e("Pass", pass);
+
+//            User user = new User(id, username, email, pass);
+            User user = new User(id, username, "", email, pass, "", null);
+
+            Call<User> call = restAPI.getQsfService().createUser(user);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    int status = response.code();
+
+                    if (status == 200) {
+                        Toast.makeText(SignUpActivity.this, "Create Success", Toast.LENGTH_SHORT).show();
 
 //                    startActivity(new Intent(SignUpActivity.this, Authentication.class));
-                    finish();
+                        finish();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(SignUpActivity.this, "Fail", Toast.LENGTH_SHORT).show();
-                Log.e("Log in fail", t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(SignUpActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                    Log.e("Sign Up fail", t.getMessage());
+                }
+            });
+//        }
     }
 
 }

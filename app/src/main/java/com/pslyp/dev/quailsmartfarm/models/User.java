@@ -10,7 +10,7 @@ public class User {
     private String email;
     private String password;
     private String msgToken;
-    private List<Device> device;
+    private List<Device> devices;
 
     public User(String id, String email, String password) {
         this.id = id;
@@ -18,12 +18,25 @@ public class User {
         this.password = password;
     }
 
-    public User(String id, String firstname, String lastname, String email, String msgToken) {
+    public User(String id, String firstname, String email, String password) {
         this.id = id;
         this.firstname = firstname;
-        this.lastname = lastname;
         this.email = email;
         this.msgToken = msgToken;
+    }
+
+    public User(String id, String firstname, String email, String password, String msgToken) {
+        this(id, email, password);
+        this.firstname = firstname;
+        this.msgToken = msgToken;
+    }
+
+    public User(String id, String firstname, String lastname, String email, String password, String msgToken, List<Device> devices) {
+        this(id, email, password);
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.msgToken = msgToken;
+        this.devices = devices;
     }
 
     public String getId() {
@@ -47,7 +60,7 @@ public class User {
     }
 
     public List<Device> getDevice() {
-        return device;
+        return devices;
     }
 
     public String getMsgToken() {
